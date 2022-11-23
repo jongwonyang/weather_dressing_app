@@ -10,7 +10,7 @@ class Recommendation extends StatefulWidget {
 }
 
 class _RecommendationState extends State<Recommendation> {
-  final temperatureSection = 3;
+  final temperatureSection = 1;
   final top = [
     ['1-top-1.png', '1-top-2.png'],
     ['2-top-1.png'],
@@ -89,17 +89,18 @@ class _RecommendationState extends State<Recommendation> {
                         int pageViewIndex) {
                       if (itemIndex == 0) {
                         return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image(
                               image: AssetImage('assets/$topImage'),
-                              width: 150,
-                              height: 150,
+                              width: 120,
+                              height: 120,
                               fit: BoxFit.contain,
                             ),
                             Image(
                               image: AssetImage('assets/$botImage'),
-                              width: 150,
-                              height: 150,
+                              width: 120,
+                              height: 120,
                               fit: BoxFit.contain,
                             )
                           ],
@@ -130,7 +131,14 @@ class _RecommendationState extends State<Recommendation> {
                     }
                   }),
                 ),
-
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: descriptions[temperatureSection + 1].map((e) {
+                      return Text('#$e ');
+                    }).toList(),
+                  ),
+                )
                 /*
                 Card(
                   elevation: 8.0,
