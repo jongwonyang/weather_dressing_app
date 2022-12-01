@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'styles.dart';
 import 'package:team_project1/HomePage.dart';
 import 'SuccessRegisterPage.dart';
+import 'forecast.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,13 +22,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        fontFamily: 'LexendDeca',
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => DailyForecast(),
+      builder: (context, child) => MaterialApp(
+        title: 'My App',
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
+          fontFamily: 'LexendDeca',
+        ),
+        home: HomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
