@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'styles.dart';
-import 'package:team_project1/HomePage.dart';
+import 'HomePage.dart';
 import 'SuccessRegisterPage.dart';
 import 'forecast.dart';
 import 'package:provider/provider.dart';
