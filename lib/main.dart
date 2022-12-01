@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scaffold(
           backgroundColor: Color(0xff4055f2),
           body: Padding(
-            padding: const EdgeInsets.only(top: 180),
+            padding: const EdgeInsets.only(top: 140),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -64,14 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         Icon(Icons.sunny, size: 35, color: Colors.white),
                         Text('  기온별 옷차림',
-                        style: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'LG'),
+                          style: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'LG'),
                         ),
                       ],
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: 80,
+                  height: 30,
                 ),
                 TabBar(
                   indicatorColor: Colors.white,
@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: 50,
                       alignment: Alignment.center,
                       child: Text('Sign In',
-                      style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20),
                       ),
                     ),
                     Container(
@@ -129,7 +129,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0, top: 10.0),
       child: Form(
         key: _formKey,
         child: ListView(
@@ -228,7 +228,7 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0, top: 10.0),
       child: Form(
         key: _formKey,
         child: ListView(
