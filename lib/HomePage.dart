@@ -101,7 +101,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var forecast = context.watch<DailyForecast>().dataList;
-    return Container();
+    return Scaffold(
+      
+       appBar: AppBar(
+         title: const Text('THis is HomePage'),
+       ),
+      body: Container(
+        child: Column(
+          children: [
+            const Text('this is Conatiner Col'),
+            const Text('hello Col'),
+
+          ],
+        ),
+      ),
+    );
   }
 }
 
