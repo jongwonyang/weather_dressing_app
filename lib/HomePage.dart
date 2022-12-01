@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var forecast = context.watch<DailyForecast>().dataList;
-    return Container();
+    return Scaffold();
   }
 }
 
