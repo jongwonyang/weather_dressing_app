@@ -4,15 +4,16 @@ import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'styles.dart';
 import 'HomePage.dart';
-import 'SuccessRegisterPage.dart';
 import 'forecast.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => MaterialApp(
         title: 'My App',
         theme: ThemeData(
-          primarySwatch: Colors.indigo,
+          primaryColor: Color(0xff4055f2),
           fontFamily: 'LexendDeca',
         ),
         home: MyHomePage(),
@@ -46,64 +47,65 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: Color(0xff4055f2),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 180),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                child: Column(
+    return KeyboardSizeProvider(
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          backgroundColor: Color(0xff4055f2),
+          body: Padding(
+            padding: const EdgeInsets.only(top: 140),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add, size: 30, color: Colors.white),
+                        Icon(Icons.sunny, size: 35, color: Colors.white),
                         Text('  기온별 옷차림',
-                        style: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'LG'),
+                          style: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'LG'),
                         ),
                       ],
                     ),
                   ],
-                )
-              ),
-              SizedBox(
-                height: 80,
-              ),
-              TabBar(
-                tabs: [
-                  Container(
-                    height: 50,
-                    alignment: Alignment.center,
-                    child: Text('Sign In',
-                    style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                TabBar(
+                  indicatorColor: Colors.white,
+                  tabs: [
+                    Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Text('Sign In',
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
-                  ),
-                  Container(
-                    height: 50,
-                    alignment: Alignment.center,
-                    child: Text('Sign Up',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    Tab(
-                      child: LoginForm(),
-                    ),
-                    Tab(
-                      child: RegisterForm(),
+                    Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Text('Sign Up',
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
                   ],
                 ),
-              )
-            ],
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      Tab(
+                        child: LoginForm(),
+                      ),
+                      Tab(
+                        child: RegisterForm(),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -127,7 +129,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0, top: 10.0),
       child: Form(
         key: _formKey,
         child: ListView(
@@ -183,11 +185,11 @@ class _LoginFormState extends State<LoginForm> {
                     style: TextStyle(fontSize: 20, color: AppColor.bluePruple, fontFamily: 'Laxend Deca')
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  elevation: 0.0
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 0.0
                 ),
                 onPressed: () async {
                   try{
@@ -226,7 +228,7 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0, top: 10.0),
       child: Form(
         key: _formKey,
         child: ListView(
@@ -289,8 +291,8 @@ class _RegisterFormState extends State<RegisterForm> {
                 onPressed: () async {
                   try {
                     final newUser =
-                        await _authentication.createUserWithEmailAndPassword(
-                            email: email, password: password);
+                    await _authentication.createUserWithEmailAndPassword(
+                        email: email, password: password);
                     if (newUser.user != null) {
                       _formKey.currentState!.reset();
                       if (!mounted) return;
@@ -313,25 +315,25 @@ Future<dynamic> _showdialog(BuildContext context) {
   return showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-            title: Text('Successful Register'),
-            content: Text('Return to LogIn Page'),
-            actions: [
-              ElevatedButton(
-                child: Text('OK',
-                    style: TextStyle(fontSize: 15, color: AppColor.bluePruple)),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 0.0),
-                onPressed: () {
-                  // Navigator.of(context).popUntil((route) => route.isFirst);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()));
-                },
-              )
-            ],
+        title: Text('Successful Register'),
+        content: Text('Return to LogIn Page'),
+        actions: [
+          ElevatedButton(
+            child: Text('OK',
+                style: TextStyle(fontSize: 15, color: AppColor.bluePruple)),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 0.0),
+            onPressed: () {
+              // Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyHomePage()));
+            },
+          )
+        ],
       )
   );
 }

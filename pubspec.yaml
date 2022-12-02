@@ -47,6 +47,7 @@ dependencies:
   provider: ^6.0.4
   carousel_slider: ^4.1.1
   image_picker: ^0.8.6
+  flutter_keyboard_size: ^1.0.1
 
 dev_dependencies:
   flutter_test:

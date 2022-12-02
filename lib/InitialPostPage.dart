@@ -5,11 +5,9 @@
 //LoaderPanel(sname: userName) 형식으로 호출.
 
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 // import 'package:flutter_firebase/FilterMessagePage.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -48,14 +46,14 @@ class _TestPageState extends State<TestPage> {
       appBar: AppBar(
         title: const Text('Test'),
         actions: [
-          // IconButton(
-          //     onPressed: () {
-          //       Navigator.push(
-          //           context,
-          //           MaterialPageRoute(
-          //               builder: (context) => const FilterMessageForm()));
-          //     },
-          //     icon: const Icon(Icons.list)),
+          IconButton(
+              onPressed: () {
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => const FilterMessageForm()));
+              },
+              icon: const Icon(Icons.list)),
 
           IconButton(
               onPressed: () {
@@ -140,24 +138,24 @@ class _NewMessageState extends State<NewMessage> {
           //height: MediaQuery.of(context).size.width,
           child: Center(
               child: _image ==null
-                  //? Text('No image')
+              //? Text('No image')
                   ? IconButton(
                   onPressed: (){
                     _getImage(ImageSource.gallery);
                   },
-                    icon: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.5),shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.add_a_photo,
-                      ),
+                  icon: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.5),shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.add_a_photo,
+                    ),
 
-                    )
                   )
+              )
                   : Image.file(File(_image!.path))
-                  //: Text(File(_image!.path).toString())
+            //: Text(File(_image!.path).toString())
 
           ),
 
@@ -305,4 +303,3 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
