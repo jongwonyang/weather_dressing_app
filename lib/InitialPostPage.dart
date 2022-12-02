@@ -138,24 +138,24 @@ class _NewMessageState extends State<NewMessage> {
           //height: MediaQuery.of(context).size.width,
           child: Center(
               child: _image ==null
-                  //? Text('No image')
+              //? Text('No image')
                   ? IconButton(
                   onPressed: (){
                     _getImage(ImageSource.gallery);
                   },
-                    icon: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.5),shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.add_a_photo,
-                      ),
+                  icon: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.5),shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.add_a_photo,
+                    ),
 
-                    )
                   )
+              )
                   : Image.file(File(_image!.path))
-                  //: Text(File(_image!.path).toString())
+            //: Text(File(_image!.path).toString())
 
           ),
 
@@ -303,4 +303,3 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
-

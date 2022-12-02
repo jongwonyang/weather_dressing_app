@@ -185,11 +185,11 @@ class _LoginFormState extends State<LoginForm> {
                     style: TextStyle(fontSize: 20, color: AppColor.bluePruple, fontFamily: 'Laxend Deca')
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  elevation: 0.0
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 0.0
                 ),
                 onPressed: () async {
                   try{
@@ -291,8 +291,8 @@ class _RegisterFormState extends State<RegisterForm> {
                 onPressed: () async {
                   try {
                     final newUser =
-                        await _authentication.createUserWithEmailAndPassword(
-                            email: email, password: password);
+                    await _authentication.createUserWithEmailAndPassword(
+                        email: email, password: password);
                     if (newUser.user != null) {
                       _formKey.currentState!.reset();
                       if (!mounted) return;
@@ -315,25 +315,25 @@ Future<dynamic> _showdialog(BuildContext context) {
   return showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-            title: Text('Successful Register'),
-            content: Text('Return to LogIn Page'),
-            actions: [
-              ElevatedButton(
-                child: Text('OK',
-                    style: TextStyle(fontSize: 15, color: AppColor.bluePruple)),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 0.0),
-                onPressed: () {
-                  // Navigator.of(context).popUntil((route) => route.isFirst);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()));
-                },
-              )
-            ],
+        title: Text('Successful Register'),
+        content: Text('Return to LogIn Page'),
+        actions: [
+          ElevatedButton(
+            child: Text('OK',
+                style: TextStyle(fontSize: 15, color: AppColor.bluePruple)),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 0.0),
+            onPressed: () {
+              // Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyHomePage()));
+            },
+          )
+        ],
       )
   );
 }

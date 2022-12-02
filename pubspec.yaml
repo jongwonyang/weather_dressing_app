@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.3.0
   firebase_auth: ^4.1.4
+  cloud_firestore : ^4.1.0
   google_fonts: ^3.0.1
 
   permission_handler: ^8.3.0
@@ -47,7 +48,6 @@ dependencies:
   carousel_slider: ^4.1.1
   image_picker: ^0.8.6
   flutter_keyboard_size: ^1.0.1
-  cloud_firestore: ^4.1.0
 
 dev_dependencies:
   flutter_test:
@@ -71,8 +71,14 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
+    - assets/images/cloudy.JPG
+    - assets/images/littlecloud.JPG
+    - assets/images/rain.JPG
+    - assets/images/shortrain.JPG
+    - assets/images/snow.JPG
+    - assets/images/sunny.JPG
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

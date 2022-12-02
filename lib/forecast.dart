@@ -7,17 +7,40 @@ class DailyForecast with ChangeNotifier{
     this.dataList = dataList;
     notifyListeners();
   }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    String result = '';
+    for (var key in dataList.keys!) {
+      result += dataList[key].toString() + ' ';
+    }
+    return result;
+  }
 }
 
 class Temperature {
+  // 하늘상태(SKY) 코드 : 맑음(1), 구름많음(3), 흐림(4)
+  // 강수형태(PTY) 코드 : 없음(0), 비(1), 비/눈(2), 눈(3), 소나기(4)
+
+  var sky = 0;
+  var pty = 0;
   var tmp = 0;
   var tmn = 0;
   var tmx = 0;
 
-  Temperature(int tmp, int tmn, int tmx) {
+  Temperature(int sky, int pty, int tmp, int tmn, int tmx) {
+    this.sky = sky;
+    this.pty = pty;
     this.tmp = tmp;
     this.tmn = tmn;
     this.tmx = tmx;
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return '${this.sky} ${this.pty} ${this.tmp} ${this.tmn} ${this.tmx}';
   }
 }
 
