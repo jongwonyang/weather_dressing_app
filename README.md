@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # weather_dressing_app
+=======
+# team_project1
+>>>>>>> 374a53787cbadbed3726230617a7845d04a05e2e
 
 A new Flutter project.
 

@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Recommendation extends StatefulWidget {
   const Recommendation({super.key});
@@ -10,7 +12,7 @@ class Recommendation extends StatefulWidget {
 }
 
 class _RecommendationState extends State<Recommendation> {
-  final temperatureSection = 1;
+  final temperatureSection = 1; // TODO: with Provider
   final top = [
     ['1-top-1.png', '1-top-2.png'],
     ['2-top-1.png'],
@@ -42,8 +44,8 @@ class _RecommendationState extends State<Recommendation> {
     ['민소매', '반팔', '반바지', '원피스']
   ];
   CarouselController controller = CarouselController();
-  int currentIndex = 0;
-  final itemCount = 5;
+
+  final _authentication = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -66,98 +68,108 @@ class _RecommendationState extends State<Recommendation> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Card(
-            elevation: 4.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: Column(
-              children: [
-                CarouselSlider.builder(
-                    options: CarouselOptions(
+        StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('records')
+              .where('user',
+                  isEqualTo:
+                      'user1@example.com') // TODO: with user, temperature section
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final docs = snapshot.data!.docs;
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: Column(
+                  children: [
+                    CarouselSlider.builder(
+                      options: CarouselOptions(
                         viewportFraction: 1.0,
                         aspectRatio: 1.0,
-                        onPageChanged: (val, _) {
-                          setState(() {
-                            currentIndex = val;
-                          });
-                        }),
-                    itemCount: itemCount,
-                    itemBuilder: (BuildContext context, int itemIndex,
-                        int pageViewIndex) {
-                      if (itemIndex == 0) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image(
-                              image: AssetImage('assets/$topImage'),
-                              width: 120,
-                              height: 120,
-                              fit: BoxFit.contain,
-                            ),
-                            Image(
-                              image: AssetImage('assets/$botImage'),
-                              width: 120,
-                              height: 120,
-                              fit: BoxFit.contain,
-                            )
-                          ],
+                      ),
+                      itemCount: docs.length + 1,
+                      itemBuilder: (BuildContext context, int itemIndex,
+                          int pageViewIndex) {
+                        return InkWell(
+                          onTap: () {
+                            if (itemIndex != 0) {
+                              print(docs[itemIndex - 1].id.toString());
+                            }
+                            // TODO
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (itemIndex == 0)
+                                Column(
+                                  children: [
+                                    Image(
+                                      image: AssetImage('assets/$topImage'),
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    Image(
+                                      image: AssetImage('assets/$botImage'),
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ],
+                                )
+                              else
+                                Container(
+                                  width: 400,
+                                  height: 240,
+                                  child: FittedBox(
+                                    clipBehavior: Clip.hardEdge,
+                                    fit: BoxFit.cover,
+                                    child: Image.network(
+                                        'https://picsum.photos/400'),
+                                  ), // TODO,
+                                ),
+                              const Divider(),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Text(
+                                '${itemIndex + 1} / ${docs.length + 1}',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: (itemIndex == 0)
+                                    ? Row(
+                                        children:
+                                            descriptions[temperatureSection + 1]
+                                                .map((e) {
+                                          return Text('#$e ');
+                                        }).toList(),
+                                      )
+                                    : Row(
+                                        children: [
+                                          Text(docs[itemIndex - 1]
+                                              ['description']),
+                                        ],
+                                      ),
+                              )
+                            ],
+                          ),
                         );
-                      }
-                      return Container(child: Text(itemIndex.toString()));
-                    }),
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(itemCount, (i) {
-                    if (i == currentIndex) {
-                      return Container(
-                        margin: const EdgeInsets.all(2.0),
-                        width: 10,
-                        height: 10,
-                        decoration: const BoxDecoration(
-                            color: Colors.blue, shape: BoxShape.circle),
-                      );
-                    } else {
-                      return Container(
-                        margin: const EdgeInsets.all(2.0),
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                            color: Color(0xFFd2d2d2), shape: BoxShape.circle),
-                      );
-                    }
-                  }),
+                      },
+                    )
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: descriptions[temperatureSection + 1].map((e) {
-                      return Text('#$e ');
-                    }).toList(),
-                  ),
-                )
-                /*
-                Card(
-                  elevation: 8.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Image(image: AssetImage('assets/$topImage')),
-                        Image(image: AssetImage('assets/$botImage'))
-                      ],
-                    ),
-                  ),
-                ),*/
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ],
     );
