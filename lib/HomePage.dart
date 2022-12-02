@@ -42,6 +42,7 @@ class WeatherWidget extends StatefulWidget {
 class _WeatherWidgetState extends State<WeatherWidget> {
 
   Future<Map<String, Temperature>> _getWeather() async {
+    LocationPermission permission = await Geolocator.requestPermission();
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     var latitude = position.latitude;
     var longitude = position.longitude;
@@ -133,84 +134,79 @@ class _WeatherWidgetState extends State<WeatherWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('weather widget'),
-      ),
-      body: Center(
-          child: FutureBuilder(
-              future: _getWeather(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
+    return Center(
+        child: FutureBuilder(
+            future: _getWeather(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
 
-                if (snapshot.hasData == false) {
-                  return CircularProgressIndicator();
+              if (snapshot.hasData == false) {
+                return CircularProgressIndicator();
+              }
+
+              else if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                );
+              }
+
+              else {
+                var forecast = snapshot.data;
+                var dateTime = DateTime.now().toString().split(' ');
+                var timeList = dateTime[1].split(':');
+                var now = timeList[0] + '00';
+
+                var imageURL = '';
+
+                var sky = forecast[now].sky;
+                if (sky == 1) {
+                  imageURL = 'assets/images/sunny.JPG';
+                } else if (sky == 3) {
+                  imageURL = 'assets/images/littlecloud.JPG';
+                } else if (sky == 4) {
+                  imageURL = 'assets/images/cloudy.JPG';
                 }
 
-                else if (snapshot.hasError) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
+                var pty = forecast[now].pty;
+                if (pty == 1 || pty == 2) {
+                  imageURL = 'assets/images/rain.JPG';
+                } else if (pty == 3) {
+                  imageURL = 'assets/images/snow.JPG';
+                } else if (pty == 4) {
+                  imageURL = 'assets/images/shortrain.JPG';
+                }
 
-                    child: Text(
-                      'Error: ${snapshot.error}',
-                      style: TextStyle(fontSize: 15),
+                return Container(
+                    margin: const EdgeInsets.all(30.0),
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(),
                     ),
-                  );
-                }
-
-                else {
-                  var forecast = snapshot.data;
-                  var dateTime = DateTime.now().toString().split(' ');
-                  var timeList = dateTime[1].split(':');
-                  var now = timeList[0] + '00';
-
-                  var imageURL = '';
-
-                  var sky = forecast[now].sky;
-                  if (sky == 1) {
-                    imageURL = 'assets/images/sunny.JPG';
-                  } else if (sky == 3) {
-                    imageURL = 'assets/images/littlecloud.JPG';
-                  } else if (sky == 4) {
-                    imageURL = 'assets/images/cloudy.JPG';
-                  }
-
-                  var pty = forecast[now].pty;
-                  if (pty == 1 || pty == 2) {
-                    imageURL = 'assets/images/rain.JPG';
-                  } else if (pty == 3) {
-                    imageURL = 'assets/images/snow.JPG';
-                  } else if (pty == 4) {
-                    imageURL = 'assets/images/shortrain.JPG';
-                  }
-
-                  return Container(
-                      margin: const EdgeInsets.all(30.0),
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(flex: 1, child: Image.asset(imageURL)),
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              children: [
-                                Text('최저 기온 : ${forecast[now].tmn} °C',
-                                    style: TextStyle(fontSize: 30)),
-                                Text('현재 기온 : ${forecast[now].tmp} °C',
-                                    style: TextStyle(fontSize: 30)),
-                                Text('최고 기온 : ${forecast[now].tmx} °C',
-                                    style: TextStyle(fontSize: 30)),
-                              ],
-                            ),
-                          )
-                        ],
-                      )
-                  );
-                }
-              })
-      ),
+                    child: Row(
+                      children: [
+                        Expanded(flex: 1, child: Image.asset(imageURL)),
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            children: [
+                              Text('최저 기온 : ${forecast[now].tmn} °C',
+                                  style: TextStyle(fontSize: 30)),
+                              Text('현재 기온 : ${forecast[now].tmp} °C',
+                                  style: TextStyle(fontSize: 30)),
+                              Text('최고 기온 : ${forecast[now].tmx} °C',
+                                  style: TextStyle(fontSize: 30)),
+                            ],
+                          ),
+                        )
+                      ],
+                    )
+                );
+              }
+            })
     );
   }
 }
