@@ -110,13 +110,13 @@ class _RecommendationState extends State<Recommendation> {
                                 Column(
                                   children: [
                                     Image(
-                                      image: AssetImage('assets/$topImage'),
+                                      image: AssetImage('assets/images/$topImage'),
                                       width: 120,
                                       height: 120,
                                       fit: BoxFit.contain,
                                     ),
                                     Image(
-                                      image: AssetImage('assets/$botImage'),
+                                      image: AssetImage('assets/images/$botImage'),
                                       width: 120,
                                       height: 120,
                                       fit: BoxFit.contain,

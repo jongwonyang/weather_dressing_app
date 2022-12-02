@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http_pk;
+import 'package:team_project1/Recommendation.dart';
 import 'dart:convert';
 import 'calculate.dart';
 import 'forecast.dart';
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
         children: const [
           // Text('Weather Widget'),
           WeatherWidget(),
-          Text('Clothes Recommendation'),
+          Recommendation(),
         ],
       ),
     );
