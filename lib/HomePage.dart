@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http_pk;
+import 'package:team_project1/InitialPostPage.dart';
 import 'package:team_project1/Recommendation.dart';
+import 'package:team_project1/RecordList.dart';
 import 'dart:convert';
 import 'calculate.dart';
 import 'forecast.dart';
@@ -15,20 +17,64 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _widgetOptions = <Widget>[
+    Column(
+      children: const [
+        WeatherWidget(),
+        Recommendation(),
+      ],
+    ),
+    const RecordListWidget()
+  ];
+
+  final List<Widget> _appBarOptions = [
+    const Text(
+      '기온별 옷차림',
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
+    const Text(
+      '일기 리스트',
+      style: TextStyle(fontWeight: FontWeight.bold),
+    )
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
-         title: const Text('This is HomePage'),
-       ),
-      body: Column(
-        children: const [
-          // Text('Weather Widget'),
-          WeatherWidget(),
-          Recommendation(),
-        ],
+      appBar: AppBar(
+        title: _appBarOptions[_selectedIndex],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedFontSize: 12,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.collections), label: 'Records')
+        ],
+        currentIndex: _selectedIndex,
+        // selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      floatingActionButton: _selectedIndex == 0
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => TestPage()));
+              },
+              child: const Icon(Icons.add),
+            ),
     );
   }
 }
@@ -41,10 +87,10 @@ class WeatherWidget extends StatefulWidget {
 }
 
 class _WeatherWidgetState extends State<WeatherWidget> {
-
   Future<Map<String, Temperature>> _getWeather() async {
     LocationPermission permission = await Geolocator.requestPermission();
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     var latitude = position.latitude;
     var longitude = position.longitude;
 
@@ -57,23 +103,25 @@ class _WeatherWidgetState extends State<WeatherWidget> {
     String base_date = getBaseDate(dateTime[0]);
     String base_time = getBaseTime(dateTime[1]);
 
-    const ServiceKey = '7o4wY20Oec3aLc6GSWaZYqOl%2BWM%2Bd9I0TOkWUM15tF3qShnUAmVFV%2BM%2BTWkn9g8TocHyzYjDpU5o7iaOLEKVsA%3D%3D';
-    http_pk.Response response = await http_pk.get(Uri.parse('http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?ServiceKey=$ServiceKey&pageNo=1&numOfRows=$numOfRows&dataType=JSON&base_date=$base_date&base_time=$base_time&nx=$nx&ny=$ny'));
+    const ServiceKey =
+        '7o4wY20Oec3aLc6GSWaZYqOl%2BWM%2Bd9I0TOkWUM15tF3qShnUAmVFV%2BM%2BTWkn9g8TocHyzYjDpU5o7iaOLEKVsA%3D%3D';
+    http_pk.Response response = await http_pk.get(Uri.parse(
+        'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?ServiceKey=$ServiceKey&pageNo=1&numOfRows=$numOfRows&dataType=JSON&base_date=$base_date&base_time=$base_time&nx=$nx&ny=$ny'));
 
     Map<String, Temperature> dailyForecast = {};
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       String jsonData = response.body;
       Map<String, dynamic> parsingData = jsonDecode(jsonData);
       var forecastJsonArray = parsingData['response']['body']['items']['item'];
 
-      for (int i = 0; i < int.parse(numOfRows); i+=12) {
+      for (int i = 0; i < int.parse(numOfRows); i += 12) {
         var sky = 0;
         var pty = 0;
         var tmp = 0;
         var tmn = 0;
         var tmx = 0;
         var fcstTime = '';
-        for (int j = i; j < i+12; j ++) {
+        for (int j = i; j < i + 12; j++) {
           var forecastObject = Forecast.fromJson(forecastJsonArray[j]);
           fcstTime = forecastObject.fcstTime;
           if (forecastObject.category == 'TMP') {
@@ -130,7 +178,8 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   void initState() {
     super.initState();
     var dailyForecast = _getWeather();
-    dailyForecast.then((value) => context.read<DailyForecast>().updateForecast(value));
+    dailyForecast
+        .then((value) => context.read<DailyForecast>().updateForecast(value));
   }
 
   @override
@@ -139,23 +188,17 @@ class _WeatherWidgetState extends State<WeatherWidget> {
         child: FutureBuilder(
             future: _getWeather(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-
               if (snapshot.hasData == false) {
                 return CircularProgressIndicator();
-              }
-
-              else if (snapshot.hasError) {
+              } else if (snapshot.hasError) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-
                   child: Text(
                     'Error: ${snapshot.error}',
                     style: TextStyle(fontSize: 15),
                   ),
                 );
-              }
-
-              else {
+              } else {
                 var forecast = snapshot.data;
                 var dateTime = DateTime.now().toString().split(' ');
                 var timeList = dateTime[1].split(':');
@@ -204,10 +247,8 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                           ),
                         )
                       ],
-                    )
-                );
+                    ));
               }
-            })
-    );
+            }));
   }
 }

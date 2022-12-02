@@ -27,27 +27,55 @@ class _RecordListState extends State<RecordList> {
           },
           child: const Icon(Icons.add),
         ),
-        body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('records')
-              .where('user', isEqualTo: 'user1@example.com') // TODO
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final docs = snapshot.data!.docs;
-            return GridView.builder(
-              itemCount: docs.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1,
-              ),
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: GridTile(
-                      child: Card(
+        body: RecordListWidget());
+  }
+
+  Widget showRecordList() {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      setState(() {
+        // getRecordList();
+        isLoading = false;
+      });
+      return const Text('done');
+    }
+  }
+
+  void getRecordList() async {
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('records').get();
+    print(snapshot.docs);
+    isLoading = false;
+  }
+}
+
+class RecordListWidget extends StatelessWidget {
+  const RecordListWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('records')
+          .where('user', isEqualTo: 'user1@example.com') // TODO
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final docs = snapshot.data!.docs;
+        return GridView.builder(
+          itemCount: docs.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 1,
+          ),
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GridTile(
+                  child: Card(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: InkWell(
                       onTap: () {
@@ -76,29 +104,10 @@ class _RecordListState extends State<RecordList> {
                       ),
                     ),
                   )),
-                );
-              },
             );
           },
-        ));
-  }
-
-  Widget showRecordList() {
-    if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    } else {
-      setState(() {
-        // getRecordList();
-        isLoading = false;
-      });
-      return const Text('done');
-    }
-  }
-
-  void getRecordList() async {
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('records').get();
-    print(snapshot.docs);
-    isLoading = false;
+        );
+      },
+    );
   }
 }
