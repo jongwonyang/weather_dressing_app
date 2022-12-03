@@ -46,15 +46,21 @@ class _WeatherWidgetState extends State<WeatherWidget> {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     var latitude = position.latitude;
     var longitude = position.longitude;
+    print(latitude);
+    print(longitude);
 
-    WeatherMapXY weathermapxy = changelaluMap(longitude, latitude);
-    var nx = weathermapxy.x.toString();
+    WeatherMapXY weathermapxy = changelaluMap(-longitude, latitude);
+    var nx = (-weathermapxy.x).toString();
     var ny = weathermapxy.y.toString();
+    print(nx);
+    print(ny);
 
-    String numOfRows = '120';
+    String numOfRows = '24';
     var dateTime = DateTime.now().toString().split(' ');
     String base_date = getBaseDate(dateTime[0]);
     String base_time = getBaseTime(dateTime[1]);
+    print(base_date);
+    print(base_time);
 
     const ServiceKey = '7o4wY20Oec3aLc6GSWaZYqOl%2BWM%2Bd9I0TOkWUM15tF3qShnUAmVFV%2BM%2BTWkn9g8TocHyzYjDpU5o7iaOLEKVsA%3D%3D';
     http_pk.Response response = await http_pk.get(Uri.parse('http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?ServiceKey=$ServiceKey&pageNo=1&numOfRows=$numOfRows&dataType=JSON&base_date=$base_date&base_time=$base_time&nx=$nx&ny=$ny'));
@@ -72,8 +78,10 @@ class _WeatherWidgetState extends State<WeatherWidget> {
         var tmn = 0;
         var tmx = 0;
         var fcstTime = '';
-        for (int j = i; j < i+12; j ++) {
-          var forecastObject = Forecast.fromJson(forecastJsonArray[j]);
+        print(i);
+
+        for (int j = 0; j < 12; j ++) {
+          var forecastObject = Forecast.fromJson(forecastJsonArray[i+j]);
           fcstTime = forecastObject.fcstTime;
           if (forecastObject.category == 'TMP') {
             tmp = int.parse(forecastObject.fcstValue);
@@ -87,6 +95,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
             pty = int.parse(forecastObject.fcstValue);
           }
         }
+
         var temperature = Temperature(sky, pty, tmp, tmn, tmx);
         dailyForecast[fcstTime] = temperature;
       }
@@ -181,8 +190,6 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                 }
 
                 return Container(
-                    margin: const EdgeInsets.all(30.0),
-                    padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       border: Border.all(),
                     ),
@@ -193,12 +200,9 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                           flex: 3,
                           child: Row(
                             children: [
-                              Text('최저 기온 : ${forecast[now].tmn} °C',
-                                  style: TextStyle(fontSize: 30)),
-                              Text('현재 기온 : ${forecast[now].tmp} °C',
-                                  style: TextStyle(fontSize: 30)),
-                              Text('최고 기온 : ${forecast[now].tmx} °C',
-                                  style: TextStyle(fontSize: 30)),
+                              Text('최저 기온 : ${forecast[now].tmn} °C'),
+                              Text('현재 기온 : ${forecast[now].tmp} °C'),
+                              Text('최고 기온 : ${forecast[now].tmx} °C'),
                             ],
                           ),
                         )
