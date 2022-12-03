@@ -23,7 +23,7 @@ class _TestPageState extends State<TestPage> {
   final _authentication = FirebaseAuth.instance;
 
   User? loggedUser;
-  String userEmail = 'quadbeats@naver.com';
+
 
 
   @override
@@ -51,10 +51,10 @@ class _TestPageState extends State<TestPage> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LoaderPanel(sname: userEmail)));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => LoaderPanel(sname: userEmail)));
               },
               icon: const Icon(Icons.list)),
 
@@ -218,14 +218,11 @@ class _NewMessageState extends State<NewMessage> {
                   final currentUser = FirebaseAuth.instance.currentUser;
                   final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
                   print(currentUserEmail);
-                  // final currentUserName = await FirebaseFirestore.instance
-                  //     .collection('user')
-                  //     .doc(currentUser!.uid)
-                  //     .get();
+
                   FirebaseFirestore.instance.collection('testradio').add({
                     'description': newMessage,
                     'user':currentUserEmail,
-                    //'userName': currentUserName.data()!['userName'],
+
                     'timestamp': Timestamp.now(),
                     'uid': currentUser!.uid,  //uid ==user
                     'rate':_rate.toString(),

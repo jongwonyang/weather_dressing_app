@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'LoaderPage.dart';
 
 class RecordList extends StatefulWidget {
   const RecordList({Key? key}) : super(key: key);
@@ -55,12 +58,15 @@ class _RecordListState extends State<RecordList> {
 class RecordListWidget extends StatelessWidget {
   const RecordListWidget({Key? key}) : super(key: key);
 
+
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('testradio')
-          .where('user', isEqualTo: 'quadbeats@naver.com') // TODO
+          .where('user', isEqualTo: FirebaseAuth.instance.currentUser?.email) // TODO
+          //currentuser.email로 받아온 값 비교하게 수정해야함 . 일단 테스트로 직접입력해서 사용중.
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -82,6 +88,10 @@ class RecordListWidget extends StatelessWidget {
                     child: InkWell(
                       onTap: () {
                         print(docs[index].id); // TODO
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoaderPanel(postid: docs[index].id)));
                       },
                       child: Stack(
                         alignment: Alignment.bottomLeft,

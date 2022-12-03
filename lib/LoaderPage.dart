@@ -12,8 +12,8 @@ import 'package:image_picker/image_picker.dart';
 
 class LoaderPanel extends StatelessWidget {
 
-  LoaderPanel({Key? key,this.sname}) : super(key: key);
-  String? sname = '';
+  LoaderPanel({Key? key,this.postid}) : super(key: key);
+  String? postid = '';
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,8 @@ class LoaderPanel extends StatelessWidget {
 
           Expanded(
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('testradio').where('user',isEqualTo: sname).snapshots(),
+              //stream: FirebaseFirestore.instance.collection('testradio').where('docs[index].id',isEqualTo: postid).snapshots(),
+              stream: FirebaseFirestore.instance.collection('testradio').where(FieldPath.documentId,isEqualTo: postid).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
