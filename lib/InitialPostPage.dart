@@ -91,7 +91,9 @@ class _TestPageState extends State<TestPage> {
       //     NewMessage(),
       //   ],
       // ),
-      body: NewMessage(),
+      body: SingleChildScrollView(
+        child: Container(child: const NewMessage()),
+      ),
 
 
     );
@@ -200,13 +202,32 @@ class _NewMessageState extends State<NewMessage> {
             Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(labelText: 'New Message'),
+                  // child: TextField(
+                  //   controller: _controller,
+                  //   decoration: const InputDecoration(labelText: 'New Message'),
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       newMessage = value;
+                  //     });
+                  //   },
+                  // ),
+                  child:TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+
+                      hintText: 'Enter your comment..',
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
                     onChanged: (value) {
-                      setState(() {
-                        newMessage = value;
-                      });
+                      newMessage = value;
                     },
                   ),
                 )),
