@@ -197,7 +197,7 @@ class _LoginFormState extends State<LoginForm> {
                     if (currentUser.user != null) {
                       _formKey.currentState!.reset();
                       if (!mounted) return;
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
                     }
                   } catch (e) {
                     print(e);

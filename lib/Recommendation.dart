@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:team_project1/forecast.dart';
 
 class Recommendation extends StatefulWidget {
   const Recommendation({super.key});
@@ -12,6 +14,7 @@ class Recommendation extends StatefulWidget {
 }
 
 class _RecommendationState extends State<Recommendation> {
+
   final temperatureSection = 1; // TODO: with Provider
   final top = [
     ['1-top-1.png', '1-top-2.png'],
@@ -110,13 +113,13 @@ class _RecommendationState extends State<Recommendation> {
                                 Column(
                                   children: [
                                     Image(
-                                      image: AssetImage('assets/$topImage'),
+                                      image: AssetImage('assets/images/$topImage'),
                                       width: 120,
                                       height: 120,
                                       fit: BoxFit.contain,
                                     ),
                                     Image(
-                                      image: AssetImage('assets/$botImage'),
+                                      image: AssetImage('assets/images/$botImage'),
                                       width: 120,
                                       height: 120,
                                       fit: BoxFit.contain,

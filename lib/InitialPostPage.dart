@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter_firebase/FilterMessagePage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:team_project1/LoaderPage.dart';
 
 class TestPage extends StatefulWidget {
   const TestPage({Key? key}) : super(key: key);
@@ -20,7 +21,9 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   final _authentication = FirebaseAuth.instance;
+
   User? loggedUser;
+
 
 
   @override
@@ -51,7 +54,7 @@ class _TestPageState extends State<TestPage> {
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute(
-                //         builder: (context) => const FilterMessageForm()));
+                //         builder: (context) => LoaderPanel(sname: userEmail)));
               },
               icon: const Icon(Icons.list)),
 
@@ -88,7 +91,9 @@ class _TestPageState extends State<TestPage> {
       //     NewMessage(),
       //   ],
       // ),
-      body: NewMessage(),
+      body: SingleChildScrollView(
+        child: Container(child: const NewMessage()),
+      ),
 
 
     );
@@ -197,13 +202,32 @@ class _NewMessageState extends State<NewMessage> {
             Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(labelText: 'New Message'),
+                  // child: TextField(
+                  //   controller: _controller,
+                  //   decoration: const InputDecoration(labelText: 'New Message'),
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       newMessage = value;
+                  //     });
+                  //   },
+                  // ),
+                  child:TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+
+                      hintText: 'Enter your comment..',
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
                     onChanged: (value) {
-                      setState(() {
-                        newMessage = value;
-                      });
+                      newMessage = value;
                     },
                   ),
                 )),
@@ -213,15 +237,15 @@ class _NewMessageState extends State<NewMessage> {
                     ? null
                     : () async {
                   final currentUser = FirebaseAuth.instance.currentUser;
-                  final currentUserName = await FirebaseFirestore.instance
-                      .collection('user')
-                      .doc(currentUser!.uid)
-                      .get();
+                  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+                  print(currentUserEmail);
+
                   FirebaseFirestore.instance.collection('testradio').add({
                     'description': newMessage,
-                    'userName': currentUserName.data()!['userName'],
+                    'user':currentUserEmail,
+
                     'timestamp': Timestamp.now(),
-                    'uid': currentUser.uid,
+                    'uid': currentUser!.uid,  //uid ==user
                     'rate':_rate.toString(),
                     'image':_image.toString() ,
 
