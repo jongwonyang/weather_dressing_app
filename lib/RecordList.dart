@@ -44,7 +44,7 @@ class _RecordListState extends State<RecordList> {
 
   void getRecordList() async {
     QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('records').get();
+        await FirebaseFirestore.instance.collection('testradio').get();
     print(snapshot.docs);
     isLoading = false;
   }
@@ -57,8 +57,8 @@ class RecordListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
-          .collection('records')
-          .where('user', isEqualTo: 'user1@example.com') // TODO
+          .collection('testradio')
+          .where('user', isEqualTo: 'quadbeats@naver.com') // TODO
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -95,7 +95,7 @@ class RecordListWidget extends StatelessWidget {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(docs[index]['date']),
+                                  child: Text(docs[index]['timestamp'].toDate().toString().substring(0,10)),
                                 ),
                               ],
                             ),

@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter_firebase/FilterMessagePage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:team_project1/LoaderPage.dart';
 
 class TestPage extends StatefulWidget {
   const TestPage({Key? key}) : super(key: key);
@@ -20,7 +21,9 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   final _authentication = FirebaseAuth.instance;
+
   User? loggedUser;
+  String userEmail = 'quadbeats@naver.com';
 
 
   @override
@@ -48,10 +51,10 @@ class _TestPageState extends State<TestPage> {
         actions: [
           IconButton(
               onPressed: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => const FilterMessageForm()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoaderPanel(sname: userEmail)));
               },
               icon: const Icon(Icons.list)),
 
@@ -213,15 +216,18 @@ class _NewMessageState extends State<NewMessage> {
                     ? null
                     : () async {
                   final currentUser = FirebaseAuth.instance.currentUser;
-                  final currentUserName = await FirebaseFirestore.instance
-                      .collection('user')
-                      .doc(currentUser!.uid)
-                      .get();
+                  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+                  print(currentUserEmail);
+                  // final currentUserName = await FirebaseFirestore.instance
+                  //     .collection('user')
+                  //     .doc(currentUser!.uid)
+                  //     .get();
                   FirebaseFirestore.instance.collection('testradio').add({
                     'description': newMessage,
-                    'userName': currentUserName.data()!['userName'],
+                    'user':currentUserEmail,
+                    //'userName': currentUserName.data()!['userName'],
                     'timestamp': Timestamp.now(),
-                    'uid': currentUser.uid,
+                    'uid': currentUser!.uid,  //uid ==user
                     'rate':_rate.toString(),
                     'image':_image.toString() ,
 

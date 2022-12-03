@@ -26,7 +26,7 @@ class LoaderPanel extends StatelessWidget {
 
           Expanded(
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('testradio').where('userName',isEqualTo: sname).snapshots(),
+              stream: FirebaseFirestore.instance.collection('testradio').where('user',isEqualTo: sname).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -36,7 +36,7 @@ class LoaderPanel extends StatelessWidget {
                   itemCount: docs.length,
                   itemBuilder: (context, index) {
                     return PostElement(
-                      userName: docs[index]['userName'],
+                      //userName: docs[index]['userName'],
                       description: docs[index]['description'],
                       rate: docs[index]['rate'],
                       image: docs[index]['image'],
@@ -56,10 +56,10 @@ class LoaderPanel extends StatelessWidget {
 enum Rate { Good, Bad }
 
 class PostElement extends StatefulWidget {
-  const PostElement({Key? key, this.userName, this.description,this.rate,this.image,this.timestamp})
+  const PostElement({Key? key, this.description,this.rate,this.image,this.timestamp})
       : super(key: key);
 
-  final String? userName;
+  //final String? userName;
   final String? description;
   final String? rate;
   final String? image;
