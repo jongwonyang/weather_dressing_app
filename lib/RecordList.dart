@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -84,8 +86,12 @@ class RecordListWidget extends StatelessWidget {
                       child: Stack(
                         alignment: Alignment.bottomLeft,
                         children: [
-                          Image.network(
-                            'https://picsum.photos/200', // TODO
+                          // Image.network(
+                          //   'https://picsum.photos/200', // TODO
+                          //   width: 200,
+                          //   height: 200,
+                          // ),
+                          Image.file(File(docs[index]['image'].replaceAll("File:", "").replaceAll("'", "").trim()),
                             width: 200,
                             height: 200,
                           ),
