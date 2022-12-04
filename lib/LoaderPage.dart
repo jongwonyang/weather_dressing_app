@@ -27,7 +27,7 @@ class LoaderPanel extends StatelessWidget {
           Expanded(
             child: StreamBuilder(
               //stream: FirebaseFirestore.instance.collection('testradio').where('docs[index].id',isEqualTo: postid).snapshots(),
-              stream: FirebaseFirestore.instance.collection('testradio').where(FieldPath.documentId,isEqualTo: postid).snapshots(),
+              stream: FirebaseFirestore.instance.collection('records').where(FieldPath.documentId,isEqualTo: postid).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
