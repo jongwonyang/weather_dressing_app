@@ -122,6 +122,9 @@ class _NewMessageState extends State<NewMessage> {
   String newMessage = '';
   Rate? _rate = Rate.Good; //default
 
+
+
+
   File? _image;
   final _picker = ImagePicker();
 
@@ -196,11 +199,12 @@ class _NewMessageState extends State<NewMessage> {
                   children: [
 
                     Text('최고기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmx.toString()),
+                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx.toString()),
                     //Text((DateTime.now().hour * 100).toString()),
                     SizedBox(width: 25.0,),
                     Text('최저기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmn.toString()),
+                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn.toString()),
+
                   ],
                 ),
 
@@ -342,6 +346,8 @@ class _NewMessageState extends State<NewMessage> {
                     : () async {
                 final currentUser = FirebaseAuth.instance.currentUser;
                 final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+                final maxtemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx.toString();
+                final mintemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn.toString();
                 print(currentUserEmail);
 
                 FirebaseFirestore.instance.collection('testradio').add({
@@ -352,6 +358,9 @@ class _NewMessageState extends State<NewMessage> {
                 'uid': currentUser!.uid,  //uid ==user
                 'rate':_rate.toString(),
                 'image':_image.toString() ,
+                  'maxtemp':maxtemp,
+
+                  'mintemp':mintemp,
 
                 });
                 _controller.clear();
