@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -46,7 +48,7 @@ class _RecommendationState extends State<Recommendation> {
   ];
   CarouselController controller = CarouselController();
   final _authentication = FirebaseAuth.instance;
-  var hour = DateTime.now().hour * 100 + 100;
+  var hour = DateTime.now().hour * 100;
 
   int getTemperature() {
     var temperature = context.read<DailyForecast>().dataList[hour];
@@ -72,7 +74,6 @@ class _RecommendationState extends State<Recommendation> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(context.watch<DailyForecast>().dataList.toString());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -94,7 +95,7 @@ class _RecommendationState extends State<Recommendation> {
                     .collection('records')
                     .where('user',
                         isEqualTo: _authentication.currentUser!.email)
-                    .where('temperature', isEqualTo: getTemperature())
+                    .where('tempcode', isEqualTo: getTemperature())
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -154,9 +155,12 @@ class _RecommendationState extends State<Recommendation> {
                                         child: FittedBox(
                                           clipBehavior: Clip.hardEdge,
                                           fit: BoxFit.cover,
-                                          child: Image.network(
-                                              'https://picsum.photos/400'),
-                                        ), // TODO,
+                                          child: Image.file(File(docs[itemIndex - 1]
+                                                  ['image']
+                                              .replaceAll("File:", "")
+                                              .replaceAll("'", "")
+                                              .trim())),
+                                        ),
                                       ),
                                     const Divider(),
                                     const SizedBox(

@@ -1,5 +1,5 @@
 // 플로팅 버튼 클릭시 게시물 생성하는 빈 페이지
-//colletion name => testradio로 사용중
+//colletion name => records로 사용중
 //지금은 로그인중인 userName도 저장해서 LoaderPage에서 이를 비교하여 찾고있음
 //Tab2에서 id값 넘겨받으면 userName대신 id값으로 세팅해야함
 //LoaderPanel(sname: userName) 형식으로 호출.
@@ -49,23 +49,7 @@ class _TestPageState extends State<TestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Test'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => LoaderPanel(sname: userEmail)));
-              },
-              icon: const Icon(Icons.list)),
-
-          IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
-              icon: const Icon(Icons.logout)),
-        ],
+        title: const Text('새 일기'),
       ),
       // body: Column(
       //   children: [
@@ -374,7 +358,7 @@ class _NewMessageState extends State<NewMessage> {
                 }
 
 
-                FirebaseFirestore.instance.collection('testradio').add({
+                FirebaseFirestore.instance.collection('records').add({
                 'description': newMessage,
                 'user':currentUserEmail,
 
@@ -389,9 +373,10 @@ class _NewMessageState extends State<NewMessage> {
 
                 });
                 _controller.clear();
+                Navigator.pop(context);
                 },
               child: Text(
-                'example',
+                '게시',
                 style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
               ),
 

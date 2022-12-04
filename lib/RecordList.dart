@@ -58,15 +58,12 @@ class _RecordListState extends State<RecordList> {
 class RecordListWidget extends StatelessWidget {
   const RecordListWidget({Key? key}) : super(key: key);
 
-
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
-          .collection('testradio')
-          .where('user', isEqualTo: FirebaseAuth.instance.currentUser?.email) // TODO
-          //currentuser.email로 받아온 값 비교하게 수정해야함 . 일단 테스트로 직접입력해서 사용중.
+          .collection('records')
+          .where('user', isEqualTo: FirebaseAuth.instance.currentUser?.email)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -96,11 +93,6 @@ class RecordListWidget extends StatelessWidget {
                       child: Stack(
                         alignment: Alignment.bottomLeft,
                         children: [
-                          // Image.network(
-                          //   'https://picsum.photos/200', // TODO
-                          //   width: 200,
-                          //   height: 200,
-                          // ),
                           Image.file(File(docs[index]['image'].replaceAll("File:", "").replaceAll("'", "").trim()),
                             width: 200,
                             height: 200,
