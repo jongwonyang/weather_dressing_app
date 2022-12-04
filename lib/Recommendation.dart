@@ -14,7 +14,7 @@ class Recommendation extends StatefulWidget {
 }
 
 class _RecommendationState extends State<Recommendation> {
-  late int temperatureSection;
+  int? temperatureSection;
 
   final top = [
     ['1-top-1.png', '1-top-2.png'],
@@ -56,7 +56,7 @@ class _RecommendationState extends State<Recommendation> {
       var dateTime = DateTime.now().toString().split(' ');
       var timeList = dateTime[1].split(':');
       var now = '${timeList[0]}00';
-      var temperature = context.watch<DailyForecast>().dataList[now];
+      var temperature = context.read<DailyForecast>().dataList[now];
       var avg = (temperature!.tmn + temperature.tmx) / 2;
       if (avg >= 27) {
         temperatureSection = 8;
@@ -76,15 +76,11 @@ class _RecommendationState extends State<Recommendation> {
         temperatureSection = 1;
       }
     });
+    temperatureSection = 8;
   }
 
   @override
   Widget build(BuildContext context) {
-    final topImage = top[temperatureSection - 1]
-        [Random().nextInt(top[temperatureSection - 1].length)];
-    final botImage = bot[temperatureSection - 1]
-        [Random().nextInt(bot[temperatureSection - 1].length)];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -99,109 +95,113 @@ class _RecommendationState extends State<Recommendation> {
             ],
           ),
         ),
-        StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('records')
-              .where('user',
-                  isEqualTo:
-                      'user1@example.com') // TODO: with user, temperature section
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final docs = snapshot.data!.docs;
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Column(
-                  children: [
-                    CarouselSlider.builder(
-                      options: CarouselOptions(
-                        viewportFraction: 1.0,
-                        aspectRatio: 1.0,
-                      ),
-                      itemCount: docs.length + 1,
-                      itemBuilder: (BuildContext context, int itemIndex,
-                          int pageViewIndex) {
-                        return InkWell(
-                          onTap: () {
-                            if (itemIndex != 0) {
-                              print(docs[itemIndex - 1].id.toString());
-                            }
-                            // TODO
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (itemIndex == 0)
-                                Column(
+        temperatureSection == null
+            ? const Center(child: CircularProgressIndicator())
+            : StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('records')
+                    .where('user',
+                        isEqualTo: _authentication.currentUser!.email)
+                    .where('temperature', isEqualTo: temperatureSection)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final docs = snapshot.data!.docs;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Card(
+                      elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: Column(
+                        children: [
+                          CarouselSlider.builder(
+                            options: CarouselOptions(
+                              viewportFraction: 1.0,
+                              aspectRatio: 1.0,
+                            ),
+                            itemCount: docs.length + 1,
+                            itemBuilder: (BuildContext context, int itemIndex,
+                                int pageViewIndex) {
+                              return InkWell(
+                                onTap: () {
+                                  if (itemIndex != 0) {
+                                    print(docs[itemIndex - 1].id.toString());
+                                  }
+                                  // TODO
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image(
-                                      image: AssetImage('assets/images/$topImage'),
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.contain,
+                                    if (itemIndex == 0)
+                                      Column(
+                                        children: [
+                                          Image(
+                                            image: AssetImage(
+                                                'assets/images/${top[temperatureSection! - 1][Random().nextInt(top[temperatureSection! - 1].length)]}'),
+                                            width: 120,
+                                            height: 120,
+                                            fit: BoxFit.contain,
+                                          ),
+                                          Image(
+                                            image: AssetImage(
+                                                'assets/images/${bot[temperatureSection! - 1][Random().nextInt(bot[temperatureSection! - 1].length)]}'),
+                                            width: 120,
+                                            height: 120,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ],
+                                      )
+                                    else
+                                      Container(
+                                        width: 400,
+                                        height: 240,
+                                        child: FittedBox(
+                                          clipBehavior: Clip.hardEdge,
+                                          fit: BoxFit.cover,
+                                          child: Image.network(
+                                              'https://picsum.photos/400'),
+                                        ), // TODO,
+                                      ),
+                                    const Divider(),
+                                    const SizedBox(
+                                      height: 16,
                                     ),
-                                    Image(
-                                      image: AssetImage('assets/images/$botImage'),
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.contain,
+                                    Text(
+                                      '${itemIndex + 1} / ${docs.length + 1}',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: (itemIndex == 0)
+                                          ? Row(
+                                              children: descriptions[
+                                                      temperatureSection! - 1]
+                                                  .map((e) {
+                                                return Text('#$e ');
+                                              }).toList(),
+                                            )
+                                          : Row(
+                                              children: [
+                                                Text(docs[itemIndex - 1]
+                                                    ['description']),
+                                              ],
+                                            ),
                                     ),
                                   ],
-                                )
-                              else
-                                Container(
-                                  width: 400,
-                                  height: 240,
-                                  child: FittedBox(
-                                    clipBehavior: Clip.hardEdge,
-                                    fit: BoxFit.cover,
-                                    child: Image.network(
-                                        'https://picsum.photos/400'),
-                                  ), // TODO,
                                 ),
-                              const Divider(),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Text(
-                                '${itemIndex + 1} / ${docs.length + 1}',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: (itemIndex == 0)
-                                    ? Row(
-                                        children:
-                                            descriptions[temperatureSection + 1]
-                                                .map((e) {
-                                          return Text('#$e ');
-                                        }).toList(),
-                                      )
-                                    : Row(
-                                        children: [
-                                          Text(docs[itemIndex - 1]
-                                              ['description']),
-                                        ],
-                                      ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    )
-                  ],
-                ),
+                              );
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ],
     );
   }
