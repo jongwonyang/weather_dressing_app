@@ -10,7 +10,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter_firebase/FilterMessagePage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:team_project1/LoaderPage.dart';
+import 'package:team_project1/forecast.dart';
 
 class TestPage extends StatefulWidget {
   const TestPage({Key? key}) : super(key: key);
@@ -110,6 +112,12 @@ class NewMessage extends StatefulWidget {
 }
 
 class _NewMessageState extends State<NewMessage> {
+
+
+  // var hour = DateTime.now().hour*100+100;
+  // var temperature = context.watch<DailyForecast>().dataList[hour];
+
+  //////////
   final _controller = TextEditingController();
   String newMessage = '';
   Rate? _rate = Rate.Good; //default
@@ -133,134 +141,235 @@ class _NewMessageState extends State<NewMessage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 5.0,),
-        Container(
-          color: const Color(0xffd0cece),
-          width: MediaQuery.of(context).size.width,
-          height: 250,
-          //height: MediaQuery.of(context).size.width,
-          child: Center(
-              child: _image ==null
-              //? Text('No image')
-                  ? IconButton(
-                  onPressed: (){
-                    _getImage(ImageSource.gallery);
-                  },
-                  icon: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.5),shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.add_a_photo,
-                    ),
-
-                  )
-              )
-                  : Image.file(File(_image!.path))
-            //: Text(File(_image!.path).toString())
-
-          ),
-
-
-
-        ),
-
-
-
-        ListTile(
-          //ListTile - title에는 내용,
-          //leading or trailing에 체크박스나 더보기와 같은 아이콘을 넣는다.
-          title: const Text('Good'),
-          leading: Radio<Rate>(
-            value: Rate.Good,
-            groupValue: _rate,
-            onChanged: (Rate? value) {
-              setState(() {
-                _rate = value;
-              });
-            },
-          ),
-        ),
-        ListTile(
-          title: const Text('Bad'),
-          leading: Radio<Rate>(
-            value: Rate.Bad,
-            groupValue: _rate,
-            onChanged: (Rate? value) {
-              setState(() {
-                _rate = value;
-              });
-            },
-          ),
-        ),
-
-        Row(
-          children: [
-            Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  // child: TextField(
-                  //   controller: _controller,
-                  //   decoration: const InputDecoration(labelText: 'New Message'),
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       newMessage = value;
-                  //     });
-                  //   },
-                  // ),
-                  child:TextFormField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-
-                      hintText: 'Enter your comment..',
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                    onChanged: (value) {
-                      newMessage = value;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          SizedBox(height: 5.0,),
+          Container(
+            color: const Color(0xffd0cece),
+            width: MediaQuery.of(context).size.width,
+            height: 250,
+            //height: MediaQuery.of(context).size.width,
+            child: Center(
+                child: _image ==null
+                //? Text('No image')
+                    ? IconButton(
+                    onPressed: (){
+                      _getImage(ImageSource.gallery);
                     },
-                  ),
-                )),
-            IconButton(
-                color: Colors.blue,
-                onPressed: newMessage.trim().isEmpty
-                    ? null
+                    icon: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.5),shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.add_a_photo,
+                      ),
+
+                    )
+                )
+                    : Image.file(File(_image!.path))
+              //: Text(File(_image!.path).toString())
+
+            ),
+
+
+
+          ),
+
+          SizedBox(height: 5.0,),
+          Container(
+
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.black12,width: 2),
+
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 25.0,),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    Text('최고기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmx.toString()),
+                    //Text((DateTime.now().hour * 100).toString()),
+                    SizedBox(width: 25.0,),
+                    Text('최저기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmn.toString()),
+                  ],
+                ),
+
+                SizedBox(height: 8.0,),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: ListTile(
+                        //ListTile - title에는 내용,
+                        //leading or trailing에 체크박스나 더보기와 같은 아이콘을 넣는다.
+                        title: const Text('Good'),
+                        leading: Radio<Rate>(
+                          value: Rate.Good,
+                          groupValue: _rate,
+                          onChanged: (Rate? value) {
+                            setState(() {
+                              _rate = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: ListTile(
+                        title: const Text('Bad'),
+                        leading: Radio<Rate>(
+                          value: Rate.Bad,
+                          groupValue: _rate,
+                          onChanged: (Rate? value) {
+                            setState(() {
+                              _rate = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+              ],
+            ),
+          ),
+
+          SizedBox(height: 15.0,),
+
+
+
+
+
+          Row(
+            children: [
+              Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                          labelText: 'New Message',
+                        contentPadding: const EdgeInsets.symmetric(vertical: 40,horizontal: 15),
+                        hintText: 'Enter your comment..',
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.black12,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+
+                        ),
+
+
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          newMessage = value;
+                        });
+                      },
+                    ),
+
+
+
+                    // child:TextFormField(
+                    //   //obscureText: true,
+                    //   decoration: InputDecoration(
+                    //
+                    //
+                    //     contentPadding: const EdgeInsets.symmetric(vertical: 40),
+                    //     hintText: 'Enter your comment..',
+                    //     enabledBorder: OutlineInputBorder(
+                    //       borderSide: BorderSide(
+                    //         color: Colors.black12,
+                    //         width: 2,
+                    //       ),
+                    //       borderRadius: BorderRadius.circular(8.0),
+                    //     ),
+                    //     filled: true,
+                    //     fillColor: Colors.white,
+                    //   ),
+                    //   onChanged: (value) {
+                    //     newMessage = value;
+                    //   },
+                    // ),
+                  )),
+
+
+
+              // IconButton(
+              //     color: Colors.blue,
+              //     onPressed: newMessage.trim().isEmpty
+              //         ? null
+              //         : () async {
+              //       final currentUser = FirebaseAuth.instance.currentUser;
+              //       final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+              //       print(currentUserEmail);
+              //
+              //       FirebaseFirestore.instance.collection('testradio').add({
+              //         'description': newMessage,
+              //         'user':currentUserEmail,
+              //
+              //         'timestamp': Timestamp.now(),
+              //         'uid': currentUser!.uid,  //uid ==user
+              //         'rate':_rate.toString(),
+              //         'image':_image.toString() ,
+              //
+              //       });
+              //       _controller.clear();
+              //     },
+              //     icon: const Icon(Icons.send)),
+            ],
+          ),
+          SizedBox(height: 35.0,),
+          ButtonTheme(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+            child: ElevatedButton(
+              onPressed: newMessage.trim().isEmpty
+                ? null
                     : () async {
-                  final currentUser = FirebaseAuth.instance.currentUser;
-                  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
-                  print(currentUserEmail);
+                final currentUser = FirebaseAuth.instance.currentUser;
+                final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+                print(currentUserEmail);
 
-                  FirebaseFirestore.instance.collection('testradio').add({
-                    'description': newMessage,
-                    'user':currentUserEmail,
+                FirebaseFirestore.instance.collection('testradio').add({
+                'description': newMessage,
+                'user':currentUserEmail,
 
-                    'timestamp': Timestamp.now(),
-                    'uid': currentUser!.uid,  //uid ==user
-                    'rate':_rate.toString(),
-                    'image':_image.toString() ,
+                'timestamp': Timestamp.now(),
+                'uid': currentUser!.uid,  //uid ==user
+                'rate':_rate.toString(),
+                'image':_image.toString() ,
 
-                  });
-                  _controller.clear();
+                });
+                _controller.clear();
                 },
-                icon: const Icon(Icons.send)),
-          ],
-        ),
+              child: Text(
+                'example',
+                style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+              ),
+
+            ),
+          ),
 
 
 
 
 
-      ],
+        ],
+      ),
     );
   }
 }
