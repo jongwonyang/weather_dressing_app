@@ -42,6 +42,9 @@ class LoaderPanel extends StatelessWidget {
                       rate: docs[index]['rate'],
                       image: docs[index]['image'],
                       timestamp: docs[index]['timestamp'],
+                      maxtemp: docs[index]['maxtemp'],
+                      mintemp: docs[index]['mintemp'],
+                      
                     );
                   },
                 );
@@ -57,7 +60,7 @@ class LoaderPanel extends StatelessWidget {
 enum Rate { Good, Bad }
 
 class PostElement extends StatefulWidget {
-  const PostElement({Key? key, this.description,this.rate,this.image,this.timestamp})
+  const PostElement({Key? key, this.description,this.rate,this.image,this.timestamp,this.maxtemp,this.mintemp})
       : super(key: key);
 
   //final String? userName;
@@ -65,6 +68,8 @@ class PostElement extends StatefulWidget {
   final String? rate;
   final String? image;
   final Timestamp? timestamp;
+  final String? maxtemp;
+  final String? mintemp;
 
   @override
   State<PostElement> createState() => _PostElementState();
@@ -91,81 +96,117 @@ class _PostElementState extends State<PostElement> {
 
     @override
     Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 5.0,),
-    //////////////////////////////////////////////imageload ///////////////////////////////
-        Container(
-          color: const Color(0xffd0cece),
-          width: MediaQuery.of(context).size.width,
-          height: 250,
-          //height: MediaQuery.of(context).size.width,
-          child: Center(
-                  child: Image.file(File(widget.image!.replaceAll("File:", "").replaceAll("'", "").trim())),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          SizedBox(height: 5.0,),
+      //////////////////////////////////////////////imageload ///////////////////////////////
+          Container(
+            color: const Color(0xffd0cece),
+            width: MediaQuery.of(context).size.width,
+            height: 250,
+            //height: MediaQuery.of(context).size.width,
+            child: Center(
+                    child: Image.file(File(widget.image!.replaceAll("File:", "").replaceAll("'", "").trim())),
+            ),
+
           ),
 
-        ),
+          SizedBox(height: 5.0,),
+          //////////////////////////////////////////////////////////////////////////////
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.black12,width: 2),),
+            child:
+            //'Rate.Good'== widget.rate ?
+            Column(
+
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+
+                SizedBox(height: 25.0,),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    Text('최고기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                    Text(widget.maxtemp!),
+                    //Text((DateTime.now().hour * 100).toString()),
+                    SizedBox(width: 25.0,),
+                    Text('최저기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                    Text(widget.mintemp!)
+                    //Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmn.toString()),
+                  ],
+                ),
+
+                SizedBox(height: 8.0,),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: ListTile(
+                        //ListTile - title에는 내용,
+                        //leading or trailing에 체크박스나 더보기와 같은 아이콘을 넣는다.
+                        title: const Text('Good'),
+                        leading: Radio<Rate>(
+                          value: Rate.Good,
+                          groupValue: _rate,
+                          onChanged: (Rate? value) {
+                            setState(() {
+                              _rate = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: ListTile(
+                        title: const Text('Bad'),
+                        leading: Radio<Rate>(
+                          value: Rate.Bad,
+                          groupValue: _rate,
+                          onChanged: (Rate? value) {
+                            setState(() {
+                              _rate = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
 
 
-        //////////////////////////////////////////////////////////////////////////////
-        Container(
-          child:
-          //'Rate.Good'== widget.rate ?
-          Column(
+          ),
+
+          Row(
             children: [
+              Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      widget.description!,
+                      style:
+                      TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  )),
 
-              ListTile(
-
-                title: const Text('Good'),
-                leading: Radio<Rate>(
-                  value: Rate.Good,
-                  groupValue: _rate,
-                  onChanged: (Rate? value) {
-                    setState(() {
-                      _rate = value;
-                    });
-                  },
-                ),
-              ),
-              ListTile(
-                title: const Text('Bad'),
-                leading: Radio<Rate>(
-                  value: Rate.Bad,
-                  groupValue: _rate,
-                  onChanged: (Rate? value) {
-                    setState(() {
-                      _rate = value;
-                    });
-                  },
-                ),
-              ),
             ],
           ),
 
-
-        ),
-
-        Row(
-          children: [
-            Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    widget.description!,
-                    style:
-                    TextStyle(color: Colors.black, fontSize: 20),
-                  ),
-                )),
-
-          ],
-        ),
-        
-        Row(
-          children: [
-            Text(widget.timestamp!.toDate().toString().substring(0,10))
-          ],
-        )
-      ],
+          Row(
+            children: [
+              Text(widget.timestamp!.toDate().toString().substring(0,10))
+            ],
+          )
+        ],
+      ),
     );
   }
 }
