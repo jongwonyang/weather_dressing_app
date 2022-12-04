@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class DailyForecast with ChangeNotifier{
-  Map<String, Temperature> dataList = {};
+  Map<int, Temperature> dataList = {};
 
-  updateForecast(Map<String, Temperature> dataList) {
+  updateForecast(Map<int, Temperature> dataList) {
     this.dataList = dataList;
     notifyListeners();
   }

@@ -87,7 +87,7 @@ class WeatherWidget extends StatefulWidget {
 }
 
 class _WeatherWidgetState extends State<WeatherWidget> {
-  Future<Map<String, Temperature>> _getWeather() async {
+  Future<Map<int, Temperature>> _getWeather() async {
     LocationPermission permission = await Geolocator.requestPermission();
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
@@ -114,11 +114,13 @@ class _WeatherWidgetState extends State<WeatherWidget> {
     http_pk.Response response = await http_pk.get(Uri.parse(
         'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?ServiceKey=$ServiceKey&pageNo=1&numOfRows=$numOfRows&dataType=JSON&base_date=$base_date&base_time=$base_time&nx=$nx&ny=$ny'));
 
-    Map<String, Temperature> dailyForecast = {};
+    Map<int, Temperature> dailyForecast = {};
     if (response.statusCode == 200) {
       String jsonData = response.body;
       Map<String, dynamic> parsingData = jsonDecode(jsonData);
       var forecastJsonArray = parsingData['response']['body']['items']['item'];
+      print(forecastJsonArray);
+
 
       for (int i = 0; i < int.parse(numOfRows); i += 12) {
         var sky = 0;
@@ -127,7 +129,6 @@ class _WeatherWidgetState extends State<WeatherWidget> {
         var tmn = 0;
         var tmx = 0;
         var fcstTime = '';
-        print(i);
 
         for (int j = 0; j < 12; j ++) {
           var forecastObject = Forecast.fromJson(forecastJsonArray[i+j]);
@@ -140,13 +141,14 @@ class _WeatherWidgetState extends State<WeatherWidget> {
             tmx = int.parse(forecastObject.fcstValue);
           } else if (forecastObject.category == 'SKY') {
             sky = int.parse(forecastObject.fcstValue);
+            print('?????????????????????????????????????????????????????????????????????');
           } else if (forecastObject.category == 'PTY') {
             pty = int.parse(forecastObject.fcstValue);
           }
         }
 
         var temperature = Temperature(sky, pty, tmp, tmn, tmx);
-        dailyForecast[fcstTime] = temperature;
+        dailyForecast[int.parse(fcstTime)] = temperature;
       }
     }
     return dailyForecast;
@@ -209,13 +211,11 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                 );
               } else {
                 var forecast = snapshot.data;
-                var dateTime = DateTime.now().toString().split(' ');
-                var timeList = dateTime[1].split(':');
-                var now = timeList[0] + '00';
+                var hour = DateTime.now().hour * 100 + 100;
 
                 var imageURL = '';
 
-                var sky = forecast[now].sky;
+                var sky = forecast[hour].sky;
                 if (sky == 1) {
                   imageURL = 'assets/images/sunny.JPG';
                 } else if (sky == 3) {
@@ -224,7 +224,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                   imageURL = 'assets/images/cloudy.JPG';
                 }
 
-                var pty = forecast[now].pty;
+                var pty = forecast[hour].pty;
                 if (pty == 1 || pty == 2) {
                   imageURL = 'assets/images/rain.JPG';
                 } else if (pty == 3) {
@@ -243,10 +243,26 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                         Expanded(
                           flex: 3,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text('최저 기온 : ${forecast[now].tmn} °C'),
-                              Text('현재 기온 : ${forecast[now].tmp} °C'),
-                              Text('최고 기온 : ${forecast[now].tmx} °C'),
+                              Column(
+                                children: [
+                                  Text('최저 기온'),
+                                  Text('${forecast[hour].tmn} °C'),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text('현재 기온'),
+                                  Text('${forecast[hour].tmp} °C'),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text('최고 기온'),
+                                  Text('${forecast[hour].tmx} °C'),
+                                ],
+                              )
                             ],
                           ),
                         )
