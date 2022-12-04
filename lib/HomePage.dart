@@ -141,7 +141,6 @@ class _WeatherWidgetState extends State<WeatherWidget> {
             tmx = int.parse(forecastObject.fcstValue);
           } else if (forecastObject.category == 'SKY') {
             sky = int.parse(forecastObject.fcstValue);
-            print('?????????????????????????????????????????????????????????????????????');
           } else if (forecastObject.category == 'PTY') {
             pty = int.parse(forecastObject.fcstValue);
           }
@@ -151,6 +150,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
         dailyForecast[int.parse(fcstTime)] = temperature;
       }
     }
+    context.read<DailyForecast>().updateForecast(dailyForecast);
     return dailyForecast;
   }
 
@@ -211,7 +211,8 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                 );
               } else {
                 var forecast = snapshot.data;
-                var hour = DateTime.now().hour * 100 + 100;
+
+                var hour = DateTime.now().hour * 100;
 
                 var imageURL = '';
 
