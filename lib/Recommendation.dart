@@ -14,8 +14,8 @@ class Recommendation extends StatefulWidget {
 }
 
 class _RecommendationState extends State<Recommendation> {
+  late int temperatureSection;
 
-  final temperatureSection = 1; // TODO: with Provider
   final top = [
     ['1-top-1.png', '1-top-2.png'],
     ['2-top-1.png'],
@@ -48,6 +48,35 @@ class _RecommendationState extends State<Recommendation> {
   ];
   CarouselController controller = CarouselController();
   final _authentication = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      var dateTime = DateTime.now().toString().split(' ');
+      var timeList = dateTime[1].split(':');
+      var now = '${timeList[0]}00';
+      var temperature = context.watch<DailyForecast>().dataList[now];
+      var avg = (temperature!.tmn + temperature.tmx) / 2;
+      if (avg >= 27) {
+        temperatureSection = 8;
+      } else if (avg >= 23) {
+        temperatureSection = 7;
+      } else if (avg >= 20) {
+        temperatureSection = 6;
+      } else if (avg >= 17) {
+        temperatureSection = 5;
+      } else if (avg >= 12) {
+        temperatureSection = 4;
+      } else if (avg >= 10) {
+        temperatureSection = 3;
+      } else if (avg >= 1) {
+        temperatureSection = 2;
+      } else {
+        temperatureSection = 1;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
