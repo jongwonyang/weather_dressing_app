@@ -346,9 +346,33 @@ class _NewMessageState extends State<NewMessage> {
                     : () async {
                 final currentUser = FirebaseAuth.instance.currentUser;
                 final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
-                final maxtemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx.toString();
-                final mintemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn.toString();
+                final maxtemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx;
+                final mintemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn;
                 print(currentUserEmail);
+
+                var tempcode =0;
+                final avgtemp = (maxtemp + mintemp)/2;
+
+                if (avgtemp<=0){
+                  tempcode=1;
+                } else if(avgtemp>0 && avgtemp<=9){
+                  tempcode=2;
+                } else if(avgtemp>=10 && avgtemp<=11){
+                  tempcode=3;
+                }  else if(avgtemp>=12 && avgtemp<=16){
+                  tempcode=4;
+                } else if(avgtemp>=17 && avgtemp<=19){
+                  tempcode=5;
+                } else if(avgtemp>=20 && avgtemp<=22){
+                  tempcode=6;
+                } else if(avgtemp>=23 && avgtemp<=26){
+                  tempcode=7;
+                } else if(avgtemp>=27){
+                  tempcode=8;
+                } else{
+                  tempcode=999;
+                }
+
 
                 FirebaseFirestore.instance.collection('testradio').add({
                 'description': newMessage,
@@ -358,9 +382,10 @@ class _NewMessageState extends State<NewMessage> {
                 'uid': currentUser!.uid,  //uid ==user
                 'rate':_rate.toString(),
                 'image':_image.toString() ,
-                  'maxtemp':maxtemp,
+                  'maxtemp':maxtemp.toString(),
 
-                  'mintemp':mintemp,
+                  'mintemp':mintemp.toString(),
+                  'tempcode':tempcode,
 
                 });
                 _controller.clear();
