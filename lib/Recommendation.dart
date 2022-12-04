@@ -14,8 +14,6 @@ class Recommendation extends StatefulWidget {
 }
 
 class _RecommendationState extends State<Recommendation> {
-  int? temperatureSection;
-
   final top = [
     ['1-top-1.png', '1-top-2.png'],
     ['2-top-1.png'],
@@ -48,39 +46,33 @@ class _RecommendationState extends State<Recommendation> {
   ];
   CarouselController controller = CarouselController();
   final _authentication = FirebaseAuth.instance;
+  var hour = DateTime.now().hour * 100 + 100;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var dateTime = DateTime.now().toString().split(' ');
-      var timeList = dateTime[1].split(':');
-      var now = '${timeList[0]}00';
-      var temperature = context.read<DailyForecast>().dataList[now];
-      var avg = (temperature!.tmn + temperature.tmx) / 2;
-      if (avg >= 27) {
-        temperatureSection = 8;
-      } else if (avg >= 23) {
-        temperatureSection = 7;
-      } else if (avg >= 20) {
-        temperatureSection = 6;
-      } else if (avg >= 17) {
-        temperatureSection = 5;
-      } else if (avg >= 12) {
-        temperatureSection = 4;
-      } else if (avg >= 10) {
-        temperatureSection = 3;
-      } else if (avg >= 1) {
-        temperatureSection = 2;
-      } else {
-        temperatureSection = 1;
-      }
-    });
-    temperatureSection = 8;
+  int getTemperature() {
+    var temperature = context.read<DailyForecast>().dataList[hour];
+    var avg = (temperature!.tmn + temperature.tmx) / 2;
+    if (avg >= 27) {
+      return 8;
+    } else if (avg >= 23) {
+      return 7;
+    } else if (avg >= 20) {
+      return 6;
+    } else if (avg >= 17) {
+      return 5;
+    } else if (avg >= 12) {
+      return 4;
+    } else if (avg >= 10) {
+      return 3;
+    } else if (avg >= 1) {
+      return 2;
+    } else {
+      return 1;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    return Text(context.watch<DailyForecast>().dataList.toString());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -95,14 +87,14 @@ class _RecommendationState extends State<Recommendation> {
             ],
           ),
         ),
-        temperatureSection == null
+        context.watch<DailyForecast>().dataList[hour] == null
             ? const Center(child: CircularProgressIndicator())
             : StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('records')
                     .where('user',
                         isEqualTo: _authentication.currentUser!.email)
-                    .where('temperature', isEqualTo: temperatureSection)
+                    .where('temperature', isEqualTo: getTemperature())
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -141,14 +133,14 @@ class _RecommendationState extends State<Recommendation> {
                                         children: [
                                           Image(
                                             image: AssetImage(
-                                                'assets/images/${top[temperatureSection! - 1][Random().nextInt(top[temperatureSection! - 1].length)]}'),
+                                                'assets/images/${top[getTemperature() - 1][Random().nextInt(top[getTemperature() - 1].length)]}'),
                                             width: 120,
                                             height: 120,
                                             fit: BoxFit.contain,
                                           ),
                                           Image(
                                             image: AssetImage(
-                                                'assets/images/${bot[temperatureSection! - 1][Random().nextInt(bot[temperatureSection! - 1].length)]}'),
+                                                'assets/images/${bot[getTemperature() - 1][Random().nextInt(bot[getTemperature() - 1].length)]}'),
                                             width: 120,
                                             height: 120,
                                             fit: BoxFit.contain,
@@ -179,7 +171,7 @@ class _RecommendationState extends State<Recommendation> {
                                       child: (itemIndex == 0)
                                           ? Row(
                                               children: descriptions[
-                                                      temperatureSection! - 1]
+                                                      getTemperature() - 1]
                                                   .map((e) {
                                                 return Text('#$e ');
                                               }).toList(),

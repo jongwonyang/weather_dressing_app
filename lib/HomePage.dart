@@ -22,8 +22,8 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _widgetOptions = <Widget>[
     Column(
       children: const [
-        // WeatherWidget(),
-        Text('weather'),
+        WeatherWidget(),
+        // Text('weather'),
         Recommendation(),
       ],
     ),
