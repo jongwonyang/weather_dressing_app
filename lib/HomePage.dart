@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   final List<Widget> _widgetOptions = <Widget>[
-    Column(
+    ListView(
       children: const [
         WeatherWidget(),
         // Text('weather'),
@@ -107,6 +107,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
     var dateTime = DateTime.now().toString().split(' ');
     String base_date = getBaseDate(dateTime[0]);
     String base_time = getBaseTime(dateTime[1]);
+    base_date = (int.parse(base_date)-1).toString();
     print(base_date);
     print(base_time);
 
@@ -213,7 +214,10 @@ class _WeatherWidgetState extends State<WeatherWidget> {
               } else {
                 var forecast = snapshot.data;
 
-                var hour = DateTime.now().hour * 100+100;
+                var hour = DateTime.now().hour * 100 + 100;
+                if (hour == 2400) {
+                  hour = 0;
+                }
 
                 var imageURL = '';
 

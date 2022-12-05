@@ -5,6 +5,10 @@ class DailyForecast with ChangeNotifier{
 
   updateForecast(Map<int, Temperature> dataList) {
     this.dataList = dataList;
+    print("//////////////////////////////////");
+    print(dataList.toString());
+    print(DateTime.now());
+    print("//////////////////////////////////");
     notifyListeners();
   }
 
