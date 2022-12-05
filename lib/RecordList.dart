@@ -31,6 +31,7 @@ class _RecordListState extends State<RecordList> {
             // TODO
           },
           child: const Icon(Icons.add),
+          backgroundColor: Color(0xff4055f2),
         ),
         body: RecordListWidget());
   }

@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'calculate.dart';
 import 'forecast.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -51,9 +52,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff4055f2),
         title: _appBarOptions[_selectedIndex],
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+              icon: const Icon(Icons.logout)
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Color(0xff4055f2),
         selectedFontSize: 12,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
