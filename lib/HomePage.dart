@@ -232,6 +232,13 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                   hour = 0;
                 }
 
+                if (forecast[hour] == null) {
+                  hour = DateTime.now().hour * 100;
+                }
+                if (hour == 2400) {
+                  hour = 0;
+                }
+
                 var imageURL = '';
 
                 var sky = forecast[hour].sky;
