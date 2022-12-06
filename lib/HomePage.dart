@@ -227,7 +227,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
               } else {
                 var forecast = snapshot.data;
 
-                var hour = DateTime.now().hour * 100 + 100;
+                var hour = DateTime.now().hour * 100 ;
                 if (hour == 2400) {
                   hour = 0;
                 }

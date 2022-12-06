@@ -11,27 +11,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 
 class LoaderPanel extends StatelessWidget {
-  LoaderPanel({Key? key, this.postid}) : super(key: key);
+
+  LoaderPanel({Key? key,this.postid}) : super(key: key);
   String? postid = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          '일기 다시보기',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: const Text('LoaderPanel'),
       ),
       body: Column(
         children: [
+
           Expanded(
             child: StreamBuilder(
               //stream: FirebaseFirestore.instance.collection('testradio').where('docs[index].id',isEqualTo: postid).snapshots(),
-              stream: FirebaseFirestore.instance
-                  .collection('records')
-                  .where(FieldPath.documentId, isEqualTo: postid)
-                  .snapshots(),
+              stream: FirebaseFirestore.instance.collection('testradio').where(FieldPath.documentId,isEqualTo: postid).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -48,12 +44,14 @@ class LoaderPanel extends StatelessWidget {
                       timestamp: docs[index]['timestamp'],
                       maxtemp: docs[index]['maxtemp'],
                       mintemp: docs[index]['mintemp'],
+
                     );
                   },
                 );
               },
             ),
           ),
+
         ],
       ),
     );
@@ -63,14 +61,7 @@ class LoaderPanel extends StatelessWidget {
 enum Rate { Good, Bad }
 
 class PostElement extends StatefulWidget {
-  const PostElement(
-      {Key? key,
-      this.description,
-      this.rate,
-      this.image,
-      this.timestamp,
-      this.maxtemp,
-      this.mintemp})
+  const PostElement({Key? key, this.description,this.rate,this.image,this.timestamp,this.maxtemp,this.mintemp})
       : super(key: key);
 
   //final String? userName;
@@ -86,18 +77,23 @@ class PostElement extends StatefulWidget {
 }
 
 class _PostElementState extends State<PostElement> {
+
+
   Rate? _rate;
 
   @override
   void initState() {
     // TODO: implement initState
-    widget.rate == 'Rate.Good' ? _rate = Rate.Good : _rate = Rate.Bad;
+    widget.rate =='Rate.Good' ?
+    _rate = Rate.Good :
+    _rate = Rate.Bad;
   }
-
   //Rate _rate = Rate(widget.rate.replaceAll("'", "")); //default
   //File _image = (widget.image!)
 
   //File? _image = File(widget.image!);
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +101,7 @@ class _PostElementState extends State<PostElement> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          SizedBox(
-            height: 5.0,
-          ),
+          SizedBox(height: 5.0,),
           //////////////////////////////////////////////imageload ///////////////////////////////
           Container(
             color: const Color(0xffd0cece),
@@ -115,55 +109,42 @@ class _PostElementState extends State<PostElement> {
             height: 250,
             //height: MediaQuery.of(context).size.width,
             child: Center(
-              child: Image.file(File(widget.image!
-                  .replaceAll("File:", "")
-                  .replaceAll("'", "")
-                  .trim())),
+              child: Image.file(File(widget.image!.replaceAll("File:", "").replaceAll("'", "").trim())),
             ),
+
           ),
 
-          SizedBox(
-            height: 5.0,
-          ),
+          SizedBox(height: 5.0,),
           //////////////////////////////////////////////////////////////////////////////
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.black12, width: 2),
-            ),
+              border: Border.all(color: Colors.black12,width: 2),),
             child:
-                //'Rate.Good'== widget.rate ?
-                Column(
+            //'Rate.Good'== widget.rate ?
+            Column(
+
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 25.0,
-                ),
+
+                SizedBox(height: 25.0,),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      '최고기온 : ',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
+
+                    Text('최고기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
                     Text(widget.maxtemp!),
                     //Text((DateTime.now().hour * 100).toString()),
-                    SizedBox(
-                      width: 25.0,
-                    ),
-                    Text(
-                      '최저기온 : ',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
+                    SizedBox(width: 25.0,),
+                    Text('최저기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
                     Text(widget.mintemp!)
                     //Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmn.toString()),
                   ],
                 ),
-                SizedBox(
-                  height: 8.0,
-                ),
+
+                SizedBox(height: 8.0,),
+
                 Row(
                   children: [
                     Expanded(
@@ -182,6 +163,7 @@ class _PostElementState extends State<PostElement> {
                         ),
                       ),
                     ),
+
                     Expanded(
                       child: ListTile(
                         title: const Text('Bad'),
@@ -200,28 +182,49 @@ class _PostElementState extends State<PostElement> {
                 ),
               ],
             ),
+
+
           ),
 
           Row(
             children: [
               Expanded(
                   child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  widget.description!,
-                  style: TextStyle(color: Colors.black, fontSize: 20),
-                ),
-              )),
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      widget.description!,
+                      style:
+                      TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  )),
+
             ],
           ),
 
           Row(
             children: [
-              Text(widget.timestamp!.toDate().toString().substring(0, 10))
+              Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Post time : '+widget.timestamp!.toDate().toString().substring(0,10),
+                      style:
+                      TextStyle(color: Colors.black, fontSize: 13),
+                    ),
+                  )),
+
+              //Text('Post time : '+widget.timestamp!.toDate().toString().substring(0,10)),
             ],
-          )
+          ),
+
+
+
+
+
         ],
       ),
     );
   }
 }
+
+

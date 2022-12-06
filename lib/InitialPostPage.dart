@@ -184,11 +184,11 @@ class _NewMessageState extends State<NewMessage> {
                   children: [
 
                     Text('최고기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx.toString()),
+                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmx.toString()),
                     //Text((DateTime.now().hour * 100).toString()),
                     SizedBox(width: 25.0,),
                     Text('최저기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn.toString()),
+                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmn.toString()),
 
                   ],
                 ),
