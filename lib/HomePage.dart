@@ -58,13 +58,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
               onPressed: () async {
-                print("logout");
                 await FirebaseAuth.instance.signOut();
-                if (FirebaseAuth.instance.currentUser == null) {
-                  print('truly logout');
-                } else {
-                  print('not logout');
-                }
                 Navigator.popUntil(context, (route) => route.isFirst);
               },
               icon: const Icon(Icons.logout)
@@ -89,6 +83,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: _selectedIndex == 0
           ? null
           : FloatingActionButton(
+              backgroundColor: Color(0xff4055f2),
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => TestPage()));

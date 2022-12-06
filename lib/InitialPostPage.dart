@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:team_project1/LoaderPage.dart';
 import 'package:team_project1/forecast.dart';
+import 'styles.dart';
 
 class TestPage extends StatefulWidget {
   const TestPage({Key? key}) : super(key: key);
@@ -341,6 +342,9 @@ class _NewMessageState extends State<NewMessage> {
             shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xff4055f2),
+              ),
               onPressed: newMessage.trim().isEmpty
                   ? null
                   : () async {
