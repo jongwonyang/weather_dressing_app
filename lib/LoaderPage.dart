@@ -18,6 +18,7 @@ class LoaderPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff4055f2),
         title: const Text(
           '일기 다시보기',
           style: TextStyle(fontWeight: FontWeight.bold),
