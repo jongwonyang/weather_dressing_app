@@ -183,11 +183,11 @@ class _NewMessageState extends State<NewMessage> {
                   children: [
 
                     Text('최고기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx.toString()),
+                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmx.toString()),
                     //Text((DateTime.now().hour * 100).toString()),
                     SizedBox(width: 25.0,),
                     Text('최저기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn.toString()),
+                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmn.toString()),
 
                   ],
                 ),
@@ -330,8 +330,8 @@ class _NewMessageState extends State<NewMessage> {
                     : () async {
                 final currentUser = FirebaseAuth.instance.currentUser;
                 final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
-                final maxtemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx;
-                final mintemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn;
+                final maxtemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmx;
+                final mintemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100)]!.tmn;
                 print(currentUserEmail);
 
                 var tempcode =0;
