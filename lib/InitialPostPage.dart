@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 // import 'package:flutter_firebase/FilterMessagePage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +26,6 @@ class _TestPageState extends State<TestPage> {
   final _authentication = FirebaseAuth.instance;
 
   User? loggedUser;
-
-
 
   @override
   void initState() {
@@ -50,7 +49,10 @@ class _TestPageState extends State<TestPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff4055f2),
-        title: const Text('새 일기', style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text(
+          '새 일기',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       // body: Column(
       //   children: [
@@ -81,14 +83,12 @@ class _TestPageState extends State<TestPage> {
       body: SingleChildScrollView(
         child: Container(child: const NewMessage()),
       ),
-
-
     );
   }
 }
 
-
 enum Rate { Good, Bad }
+
 class NewMessage extends StatefulWidget {
   const NewMessage({Key? key}) : super(key: key);
 
@@ -97,8 +97,6 @@ class NewMessage extends StatefulWidget {
 }
 
 class _NewMessageState extends State<NewMessage> {
-
-
   // var hour = DateTime.now().hour*100+100;
   // var temperature = context.watch<DailyForecast>().dataList[hour];
 
@@ -107,15 +105,12 @@ class _NewMessageState extends State<NewMessage> {
   String newMessage = '';
   Rate? _rate = Rate.Good; //default
 
-
-
-
   File? _image;
   final _picker = ImagePicker();
 
   //List<XFile> _pickedImgs = [];
 
-  Future _getImage(ImageSource imageSource) async{
+  Future _getImage(ImageSource imageSource) async {
     //final List<XFile>? images = await _picker.pickMultiImage();
 
     final image = await _picker.pickImage(source: imageSource);
@@ -123,8 +118,6 @@ class _NewMessageState extends State<NewMessage> {
     setState(() {
       _image = File(image!.path);
     });
-
-
   }
 
   @override
@@ -133,68 +126,100 @@ class _NewMessageState extends State<NewMessage> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          SizedBox(height: 5.0,),
+          SizedBox(
+            height: 5.0,
+          ),
           Container(
             color: const Color(0xffd0cece),
             width: MediaQuery.of(context).size.width,
             height: 250,
             //height: MediaQuery.of(context).size.width,
             child: Center(
-                child: _image ==null
-                //? Text('No image')
+                child: _image == null
+                    //? Text('No image')
                     ? IconButton(
-                    onPressed: (){
-                      _getImage(ImageSource.gallery);
-                    },
-                    icon: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.5),shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.add_a_photo,
-                      ),
-
-                    )
-                )
+                        onPressed: () {
+                          _getImage(ImageSource.gallery);
+                        },
+                        icon: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.add_a_photo,
+                          ),
+                        ))
                     : Image.file(File(_image!.path))
-              //: Text(File(_image!.path).toString())
+                //: Text(File(_image!.path).toString())
 
-            ),
-
-
-
+                ),
           ),
-
-          SizedBox(height: 5.0,),
+          SizedBox(
+            height: 5.0,
+          ),
           Container(
-
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.black12,width: 2),
-
+              border: Border.all(color: Colors.black12, width: 2),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 25.0,),
-
+                SizedBox(
+                  height: 25.0,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
-                    Text('최고기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx.toString()),
+                    Text(
+                      '최고기온 : ',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    context
+                                .watch<DailyForecast>()
+                                .dataList[(DateTime.now().hour * 100 + 100)] !=
+                            null
+                        ? Text(context
+                            .watch<DailyForecast>()
+                            .dataList[(DateTime.now().hour * 100 + 100)]!
+                            .tmx
+                            .toString())
+                        : Text(context
+                            .watch<DailyForecast>()
+                            .dataList[(DateTime.now().hour * 100)]!
+                            .tmx
+                            .toString()),
                     //Text((DateTime.now().hour * 100).toString()),
-                    SizedBox(width: 25.0,),
-                    Text('최저기온 : ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                    Text(context.watch<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn.toString()),
-
+                    SizedBox(
+                      width: 25.0,
+                    ),
+                    Text(
+                      '최저기온 : ',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    context
+                                .watch<DailyForecast>()
+                                .dataList[(DateTime.now().hour * 100 + 100)] !=
+                            null
+                        ? Text(context
+                            .watch<DailyForecast>()
+                            .dataList[(DateTime.now().hour * 100 + 100)]!
+                            .tmn
+                            .toString())
+                        : Text(context
+                            .watch<DailyForecast>()
+                            .dataList[(DateTime.now().hour * 100)]!
+                            .tmn
+                            .toString()),
                   ],
                 ),
-
-                SizedBox(height: 8.0,),
-
+                SizedBox(
+                  height: 8.0,
+                ),
                 Row(
                   children: [
                     Expanded(
@@ -213,7 +238,6 @@ class _NewMessageState extends State<NewMessage> {
                         ),
                       ),
                     ),
-
                     Expanded(
                       child: ListTile(
                         title: const Text('Bad'),
@@ -230,72 +254,61 @@ class _NewMessageState extends State<NewMessage> {
                     ),
                   ],
                 ),
-
               ],
             ),
           ),
-
-          SizedBox(height: 15.0,),
-
-
-
-
-
+          SizedBox(
+            height: 15.0,
+          ),
           Row(
             children: [
               Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                          labelText: 'New Message',
-                        contentPadding: const EdgeInsets.symmetric(vertical: 40,horizontal: 15),
-                        hintText: 'Enter your comment..',
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.black12,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-
-                        ),
-
-
+                padding: const EdgeInsets.all(0.0),
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    labelText: 'New Message',
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 40, horizontal: 15),
+                    hintText: 'Enter your comment..',
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Colors.black12,
+                        width: 2,
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          newMessage = value;
-                        });
-                      },
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      newMessage = value;
+                    });
+                  },
+                ),
 
-
-
-                    // child:TextFormField(
-                    //   //obscureText: true,
-                    //   decoration: InputDecoration(
-                    //
-                    //
-                    //     contentPadding: const EdgeInsets.symmetric(vertical: 40),
-                    //     hintText: 'Enter your comment..',
-                    //     enabledBorder: OutlineInputBorder(
-                    //       borderSide: BorderSide(
-                    //         color: Colors.black12,
-                    //         width: 2,
-                    //       ),
-                    //       borderRadius: BorderRadius.circular(8.0),
-                    //     ),
-                    //     filled: true,
-                    //     fillColor: Colors.white,
-                    //   ),
-                    //   onChanged: (value) {
-                    //     newMessage = value;
-                    //   },
-                    // ),
-                  )),
-
-
+                // child:TextFormField(
+                //   //obscureText: true,
+                //   decoration: InputDecoration(
+                //
+                //
+                //     contentPadding: const EdgeInsets.symmetric(vertical: 40),
+                //     hintText: 'Enter your comment..',
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(
+                //         color: Colors.black12,
+                //         width: 2,
+                //       ),
+                //       borderRadius: BorderRadius.circular(8.0),
+                //     ),
+                //     filled: true,
+                //     fillColor: Colors.white,
+                //   ),
+                //   onChanged: (value) {
+                //     newMessage = value;
+                //   },
+                // ),
+              )),
 
               // IconButton(
               //     color: Colors.blue,
@@ -321,80 +334,80 @@ class _NewMessageState extends State<NewMessage> {
               //     icon: const Icon(Icons.send)),
             ],
           ),
-          SizedBox(height: 35.0,),
+          SizedBox(
+            height: 35.0,
+          ),
           ButtonTheme(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: ElevatedButton(
               onPressed: newMessage.trim().isEmpty
-                ? null
-                    : () async {
-                final currentUser = FirebaseAuth.instance.currentUser;
-                final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
-                final maxtemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmx;
-                final mintemp = context.read<DailyForecast>().dataList[(DateTime.now().hour * 100+100)]!.tmn;
-                print(currentUserEmail);
+                  ? null
+                  : () async {
+                      final currentUser = FirebaseAuth.instance.currentUser;
+                      final currentUserEmail =
+                          FirebaseAuth.instance.currentUser?.email;
+                      final maxtemp = context
+                          .read<DailyForecast>()
+                          .dataList[(DateTime.now().hour * 100 + 100)]!
+                          .tmx;
+                      final mintemp = context
+                          .read<DailyForecast>()
+                          .dataList[(DateTime.now().hour * 100 + 100)]!
+                          .tmn;
+                      print(currentUserEmail);
 
-                var tempcode =0;
-                final avgtemp = (maxtemp + mintemp)/2;
+                      var tempcode = 0;
+                      final avgtemp = (maxtemp + mintemp) / 2;
 
-                if (avgtemp<=0){
-                  tempcode=1;
-                } else if(avgtemp>0 && avgtemp<=9){
-                  tempcode=2;
-                } else if(avgtemp>=10 && avgtemp<=11){
-                  tempcode=3;
-                }  else if(avgtemp>=12 && avgtemp<=16){
-                  tempcode=4;
-                } else if(avgtemp>=17 && avgtemp<=19){
-                  tempcode=5;
-                } else if(avgtemp>=20 && avgtemp<=22){
-                  tempcode=6;
-                } else if(avgtemp>=23 && avgtemp<=26){
-                  tempcode=7;
-                } else if(avgtemp>=27){
-                  tempcode=8;
-                } else{
-                  tempcode=999;
-                }
+                      if (avgtemp <= 0) {
+                        tempcode = 1;
+                      } else if (avgtemp > 0 && avgtemp <= 9) {
+                        tempcode = 2;
+                      } else if (avgtemp >= 10 && avgtemp <= 11) {
+                        tempcode = 3;
+                      } else if (avgtemp >= 12 && avgtemp <= 16) {
+                        tempcode = 4;
+                      } else if (avgtemp >= 17 && avgtemp <= 19) {
+                        tempcode = 5;
+                      } else if (avgtemp >= 20 && avgtemp <= 22) {
+                        tempcode = 6;
+                      } else if (avgtemp >= 23 && avgtemp <= 26) {
+                        tempcode = 7;
+                      } else if (avgtemp >= 27) {
+                        tempcode = 8;
+                      } else {
+                        tempcode = 999;
+                      }
 
+                      FirebaseFirestore.instance.collection('records').add({
+                        'description': newMessage,
+                        'user': currentUserEmail,
 
-                FirebaseFirestore.instance.collection('records').add({
-                'description': newMessage,
-                'user':currentUserEmail,
+                        'timestamp': Timestamp.now(),
+                        'uid': currentUser!.uid, //uid ==user
+                        'rate': _rate.toString(),
+                        'image': _image.toString(),
+                        'maxtemp': maxtemp.toString(),
 
-                'timestamp': Timestamp.now(),
-                'uid': currentUser!.uid,  //uid ==user
-                'rate':_rate.toString(),
-                'image':_image.toString() ,
-                  'maxtemp':maxtemp.toString(),
-
-                  'mintemp':mintemp.toString(),
-                  'tempcode':tempcode,
-
-                });
-                _controller.clear();
-                Navigator.pop(context);
-                },
+                        'mintemp': mintemp.toString(),
+                        'tempcode': tempcode,
+                      });
+                      _controller.clear();
+                      Navigator.pop(context);
+                    },
               child: Text(
                 '게시',
-                style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
-
             ),
           ),
-
-
-
-
-
         ],
       ),
     );
   }
 }
-
-
 
 class RadioButtonWidget extends StatefulWidget {
   const RadioButtonWidget({Key? key}) : super(key: key);
@@ -405,7 +418,6 @@ class RadioButtonWidget extends StatefulWidget {
 
 /// This is the private State class that goes with MyStatefulWidget.
 class _RadioButtonWidgetState extends State<RadioButtonWidget> {
-
   Rate? _rate = Rate.Good; //default
 
   @override
@@ -413,7 +425,6 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
     return Column(
       children: <Widget>[
         ListTile(
-
           title: const Text('Good'),
           leading: Radio<Rate>(
             value: Rate.Good,
@@ -449,7 +460,6 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
         //     },
         //   ),
         // ),
-
       ],
     );
   }
