@@ -57,8 +57,8 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
                 Navigator.popUntil(context, (route) => route.isFirst);
               },
               icon: const Icon(Icons.logout)
@@ -83,12 +83,13 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: _selectedIndex == 0
           ? null
           : FloatingActionButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TestPage()));
-              },
-              child: const Icon(Icons.add),
-            ),
+        backgroundColor: Color(0xff4055f2),
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => TestPage()));
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
@@ -116,7 +117,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
     print(nx);
     print(ny);
 
-    String numOfRows = '24';
+    String numOfRows = '120';
     var dateTime = DateTime.now().toString().split(' ');
     String base_date = getBaseDate(dateTime[0]);
     String base_time = getBaseTime(dateTime[1]);
@@ -137,23 +138,22 @@ class _WeatherWidgetState extends State<WeatherWidget> {
       print(forecastJsonArray);
 
 
+      var tmpList = [];
+      var fcstTime = DateTime.now().hour * 100;
+      if (fcstTime == 2400) {
+        fcstTime = 0;
+      }
       for (int i = 0; i < int.parse(numOfRows); i += 12) {
         var sky = 0;
         var pty = 0;
         var tmp = 0;
-        var tmn = 0;
-        var tmx = 0;
-        var fcstTime = '';
 
         for (int j = 0; j < 12; j ++) {
           var forecastObject = Forecast.fromJson(forecastJsonArray[i+j]);
-          fcstTime = forecastObject.fcstTime;
+          // fcstTime = forecastObject.fcstTime;
           if (forecastObject.category == 'TMP') {
             tmp = int.parse(forecastObject.fcstValue);
-          } else if (forecastObject.category == 'TMN') {
-            tmn = int.parse(forecastObject.fcstValue);
-          } else if (forecastObject.category == 'TMX') {
-            tmx = int.parse(forecastObject.fcstValue);
+            tmpList.add(tmp);
           } else if (forecastObject.category == 'SKY') {
             sky = int.parse(forecastObject.fcstValue);
           } else if (forecastObject.category == 'PTY') {
@@ -161,9 +161,14 @@ class _WeatherWidgetState extends State<WeatherWidget> {
           }
         }
 
-        var temperature = Temperature(sky, pty, tmp, tmn, tmx);
-        dailyForecast[int.parse(fcstTime)] = temperature;
+        if (i == 0) {
+          var temperature = Temperature(sky, pty, tmp, 0, 0);
+          dailyForecast[fcstTime] = temperature;
+        }
       }
+      tmpList.sort();
+      dailyForecast[fcstTime]?.tmn = tmpList.first;
+      dailyForecast[fcstTime]?.tmx = tmpList.last;
     }
     context.read<DailyForecast>().updateForecast(dailyForecast);
     return dailyForecast;
@@ -227,10 +232,11 @@ class _WeatherWidgetState extends State<WeatherWidget> {
               } else {
                 var forecast = snapshot.data;
 
-                var hour = DateTime.now().hour * 100 ;
+                var hour = DateTime.now().hour * 100;
                 if (hour == 2400) {
                   hour = 0;
                 }
+                print(hour);
 
                 if (forecast[hour] == null) {
                   hour = DateTime.now().hour * 100;
