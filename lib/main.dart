@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         Icon(Icons.sunny, size: 35, color: Colors.white),
                         Text('  기온별 옷차림',
-                          style: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'LG'),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white, fontFamily: 'LG'),
                         ),
                       ],
                     ),
