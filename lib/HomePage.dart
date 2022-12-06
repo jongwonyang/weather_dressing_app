@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'calculate.dart';
 import 'forecast.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -51,9 +52,27 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff4055f2),
         title: _appBarOptions[_selectedIndex],
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                print("logout");
+                await FirebaseAuth.instance.signOut();
+                if (FirebaseAuth.instance.currentUser == null) {
+                  print('truly logout');
+                } else {
+                  print('not logout');
+                }
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+              icon: const Icon(Icons.logout)
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Color(0xff4055f2),
         selectedFontSize: 12,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -223,6 +242,13 @@ class _WeatherWidgetState extends State<WeatherWidget> {
                   hour = 0;
                 }
                 print(hour);
+
+                if (forecast[hour] == null) {
+                  hour = DateTime.now().hour * 100;
+                }
+                if (hour == 2400) {
+                  hour = 0;
+                }
 
                 var imageURL = '';
 

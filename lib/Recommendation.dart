@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:team_project1/LoaderPage.dart';
 import 'package:team_project1/forecast.dart';
 
 class Recommendation extends StatefulWidget {
@@ -123,6 +124,14 @@ class _RecommendationState extends State<Recommendation> {
                                 onTap: () {
                                   if (itemIndex != 0) {
                                     print(docs[itemIndex - 1].id.toString());
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => LoaderPanel(
+                                                  postid: docs[itemIndex - 1]
+                                                      .id
+                                                      .toString(),
+                                                )));
                                   }
                                   // TODO
                                 },
@@ -155,11 +164,11 @@ class _RecommendationState extends State<Recommendation> {
                                         child: FittedBox(
                                           clipBehavior: Clip.hardEdge,
                                           fit: BoxFit.cover,
-                                          child: Image.file(File(docs[itemIndex - 1]
-                                                  ['image']
-                                              .replaceAll("File:", "")
-                                              .replaceAll("'", "")
-                                              .trim())),
+                                          child: Image.file(File(
+                                              docs[itemIndex - 1]['image']
+                                                  .replaceAll("File:", "")
+                                                  .replaceAll("'", "")
+                                                  .trim())),
                                         ),
                                       ),
                                     const Divider(),
